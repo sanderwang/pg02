@@ -1,0 +1,23 @@
+# Kubenutty core components.
+metadata:
+  name: kubenuts
+  version: 0.1.0
+  namespace: kubenuts
+  required: true
+
+properties:
+  # Internal gateway configuration.
+  internalGateway:
+    # -- Enable the HTTP redirect route on the internal gateway
+    httpRedirectEnabled: true
+
+  # Global (external) gateway configuration.
+  globalGateway:
+    # -- Enable the global gateway and its associated resources
+    enabled: false
+    # -- Enable the HTTP redirect route on the global gateway
+    httpRedirectEnabled: true
+
+  # -- Additional namespaces to create. A SecretStore will also be created for each namespace.
+  extraNamespaces:
+  - kubenutty

@@ -1,0 +1,7 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: "kubenuts"
+  labels:
+    app.kubernetes.io/managed-by: kubenuts

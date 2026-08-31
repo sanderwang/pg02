@@ -1,0 +1,16 @@
+---
+kind: HTTPRoute
+apiVersion: gateway.networking.k8s.io/v1
+metadata:
+  namespace: "kubenuts"
+  name: "kubenuts-internal-http-redirect"
+spec:
+  parentRefs:
+  - name: "kubenuts-internal"
+    sectionName: http-redirect
+  rules:
+  - filters:
+    - type: RequestRedirect
+      requestRedirect:
+        scheme: https
+        statusCode: 301
