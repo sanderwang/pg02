@@ -1,0 +1,9 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- kubenuts-extra-namespaces.yaml
+- kubenuts-extra-secret-stores.yaml
+- kubenuts-internal-gateway.yaml
+- kubenuts-namespace.yaml
+- kubenuts-secret-store.yaml
