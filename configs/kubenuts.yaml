@@ -19,5 +19,4 @@ properties:
     httpRedirectEnabled: true
 
   # -- Additional namespaces to create. A SecretStore will also be created for each namespace.
-  extraNamespaces:
-  - kubenutty
+  extraNamespaces: []
