@@ -1,6 +1,0 @@
----
-installCRDs: true
-revisionHistoryLimit: 3
-serviceAccount:
-  create: true
-  name: external-secrets
