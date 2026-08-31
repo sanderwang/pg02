@@ -5,6 +5,12 @@ metadata:
    namespace: "kubenuts"
    name: "kubenuts-internal"
 spec:
+  gatewayClassName: alb
+  infrastructure:
+    parametersRef:
+      group: gateway.k8s.aws
+      kind: LoadBalancerConfiguration
+      name: "kubenuts-internal"
   listeners:
   - name: http-redirect
     protocol: HTTP

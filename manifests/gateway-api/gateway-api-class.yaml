@@ -1,0 +1,21 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: "kubenuts"
+  name: "gateway-api-class"
+spec:
+  dependsOn:
+  - namespace: "kubenuts"
+    name: "gateway-api-crds"
+  interval: 1h
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    namespace: flux-system
+    name: flux-system
+  path: "/manifests/gateway-api/gateway-api-class"
+  healthChecks:
+  - apiVersion: gateway.networking.k8s.io/v1
+    kind: GatewayClass
+    name: alb

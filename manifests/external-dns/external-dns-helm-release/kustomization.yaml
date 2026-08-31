@@ -2,8 +2,4 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-- external-dns
-- external-secrets
-- flux-system
-- gateway-api
-- kubenuts
+- helm-release.yaml

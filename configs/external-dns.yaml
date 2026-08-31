@@ -1,0 +1,23 @@
+# External DNS synchronizes exposed Kubernetes Services and Ingresses with DNS providers.
+# Re: https://kubernetes-sigs.github.io/external-dns/latest/
+metadata:
+  name: external-dns
+  version: "1.21.1"
+  namespace: kubenuts
+
+# Properties that can be customized to suit your system needs.
+properties:
+  # Google related configurations (only used when the cluster is on GCP).
+  google:
+    # -- ID of the Google project that owns the target DNS zone(s). If not specified, it defaults
+    # to the same Google project that owns the GKE cluster
+    project: ''
+
+  # -- Resources to provide to the external-dns pod
+  resources: {}
+    # requests:
+    #   cpu: 50m
+    #   memory: 100Mi
+    # limits:
+    #   cpu: 100m
+    #   memory: 200Mi

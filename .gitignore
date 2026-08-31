@@ -1,0 +1,5 @@
+.envrc
+backend.hcl
+.terraform
+.terraform.lock.hcl
+terraform.tfstate.backup

@@ -1,0 +1,8 @@
+---
+apiVersion: gateway.k8s.aws/v1beta1
+kind: LoadBalancerConfiguration
+metadata:
+  namespace: "kubenuts"
+  name: "kubenuts-internal"
+spec:
+  scheme: internal

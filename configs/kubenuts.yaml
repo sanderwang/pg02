@@ -11,11 +11,13 @@ properties:
     # -- Enable the HTTP redirect route on the internal gateway
     httpRedirectEnabled: true
 
-  # Global (external) gateway configuration.
-  globalGateway:
-    # -- Enable the global gateway and its associated resources
+  # External gateway configuration.
+  externalGateway:
+    # -- Enable the external gateway and its associated resources
     enabled: false
-    # -- Enable the HTTP redirect route on the global gateway
+    # -- Override the GatewayClass name. Defaults to alb (EKS), gke-l7-global-external-managed (GKE).
+    gatewayClassName: ""
+    # -- Enable the HTTP redirect route on the external gateway
     httpRedirectEnabled: true
 
   # -- Additional namespaces to create. A SecretStore will also be created for each namespace.
