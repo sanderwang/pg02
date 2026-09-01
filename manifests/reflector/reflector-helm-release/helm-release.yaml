@@ -1,0 +1,28 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  namespace: "kubenuts"
+  name: "reflector"
+spec:
+  interval: 15m
+  timeout: 10m
+  releaseName: "reflector"
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        namespace: "kubenuts"
+        name: "reflector"
+      chart: reflector
+      version: "10.0.65"
+  install:
+    remediation:
+      retries: 10
+  upgrade:
+    remediation:
+      retries: 10
+  valuesFrom:
+  - kind: ConfigMap
+    name: "reflector-helm-values"
+    valuesKey: values.yaml

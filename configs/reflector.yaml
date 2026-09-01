@@ -1,0 +1,21 @@
+# Reflector monitors changes to resources (secrets and configmaps) and reflects changes to mirror
+# resources in the same or other namespaces.
+# Re: https://github.com/emberstack/kubernetes-reflector
+metadata:
+  name: reflector
+  version: "10.0.65"
+  namespace: kubenuts
+
+# Properties that can be customized to suit your system needs.
+properties:
+  # -- The number of reflector pods to run
+  replicas: 1
+
+  # -- Resources to provide to the reflector pod
+  resources: {}
+    # requests:
+    #   cpu: 50m
+    #   memory: 100Mi
+    # limits:
+    #   cpu: 100m
+    #   memory: 200Mi
