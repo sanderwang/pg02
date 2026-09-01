@@ -1,4 +1,7 @@
 ---
+extraArgs:
+  aws-zone-type: public
+  prefer-alias: true
 provider:
   name: aws
 domainFilters:
