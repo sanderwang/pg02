@@ -1,0 +1,14 @@
+---
+crds:
+  enabled: true
+  keep: true
+prometheus:
+  enabled: true
+  servicemonitor:
+    enabled: false
+replicaCount: 1
+serviceAccount:
+  create: true
+  name: "cert-manager"
+  annotations:
+    eks.amazonaws.com/role-arn: "arn:aws:iam::472882997329:role/pg02-cert-manager"

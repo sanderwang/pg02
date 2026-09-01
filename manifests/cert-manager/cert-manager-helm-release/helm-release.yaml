@@ -1,0 +1,30 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  namespace: "cert-manager"
+  name: "cert-manager"
+spec:
+  interval: 15m
+  timeout: 10m
+  releaseName: "cert-manager"
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        namespace: "cert-manager"
+        name: "cert-manager"
+      chart: cert-manager
+      version: "v1.21.1"
+  install:
+    crds: CreateReplace
+    remediation:
+      retries: 10
+  upgrade:
+    crds: CreateReplace
+    remediation:
+      retries: 10
+  valuesFrom:
+  - kind: ConfigMap
+    name: "cert-manager-helm-values"
+    valuesKey: values.yaml

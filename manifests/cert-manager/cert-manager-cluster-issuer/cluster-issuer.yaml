@@ -1,0 +1,17 @@
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: "kubenuts"
+spec:
+  acme:
+    privateKeySecretRef:
+      name: "cert-manager-letsencrypt-account-key"
+    server: https://acme-v02.api.letsencrypt.org/directory
+    solvers:
+    - dns01:
+        route53:
+          region: "us-west-2"
+      selector:
+        dnsZones:
+        - "pg02.narvar.qa"

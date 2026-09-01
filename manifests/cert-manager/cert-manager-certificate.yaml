@@ -1,0 +1,27 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: "cert-manager"
+  name: "cert-manager-certificate"
+spec:
+  dependsOn:
+  - namespace: "cert-manager"
+    name: "cert-manager-cluster-issuer"
+  interval: 10m
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    namespace: flux-system
+    name: flux-system
+  path: "/manifests/cert-manager/cert-manager-certificate"
+  targetNamespace: "cert-manager"
+  healthChecks:
+  - apiVersion: cert-manager.io/v1
+    kind: Certificate
+    namespace: "cert-manager"
+    name: "pg02-wildcard-cert"
+  - apiVersion: v1
+    kind: Secret
+    namespace: "cert-manager"
+    name: "pg02-wildcard-cert"

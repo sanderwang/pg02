@@ -1,0 +1,30 @@
+# cert-manager is a powerful and extensible X.509 certificate controller for Kubernetes workloads.
+# Re: https://cert-manager.io/
+metadata:
+  name: cert-manager
+  version: 1.21.1
+  namespace: cert-manager
+
+# Properties that can be customized to suit your system needs.
+properties:
+  # Google related configurations (only used when the cluster is on GCP).
+  google:
+    # -- ID of the Google project that owns the DNS zone(s). If not specified, it defaults to the
+    # same Google project that owns the GKE cluster
+    project: ''
+
+  # -- Email address to be associated with the ACME account. It will be used to contact you in
+  # case of issues with your account or certificates, including expiry notification emails
+  email: ''
+
+  # -- The number of controller pods to run
+  replicas: 1
+
+  # -- Resources to provide to the controller pod
+  resources: {}
+    # requests:
+    #   cpu: 50m
+    #   memory: 100Mi
+    # limits:
+    #   cpu: 100m
+    #   memory: 200Mi

@@ -1,0 +1,23 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: "cert-manager"
+  name: "cert-manager-helm-release"
+spec:
+  dependsOn:
+  - namespace: "cert-manager"
+    name: "cert-manager-helm-values"
+  interval: 10m
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    namespace: flux-system
+    name: flux-system
+  path: "/manifests/cert-manager/cert-manager-helm-release"
+  targetNamespace: "cert-manager"
+  healthChecks:
+  - apiVersion: helm.toolkit.fluxcd.io/v2
+    kind: HelmRelease
+    namespace: "cert-manager"
+    name: "cert-manager"

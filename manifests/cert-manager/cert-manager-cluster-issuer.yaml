@@ -1,0 +1,22 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: "cert-manager"
+  name: "cert-manager-cluster-issuer"
+spec:
+  dependsOn:
+  - namespace: "cert-manager"
+    name: "cert-manager-helm-release"
+  interval: 10m
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    namespace: flux-system
+    name: flux-system
+  path: "/manifests/cert-manager/cert-manager-cluster-issuer"
+  targetNamespace: "cert-manager"
+  healthChecks:
+  - apiVersion: cert-manager.io/v1
+    kind: ClusterIssuer
+    name: "kubenuts"
