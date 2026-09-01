@@ -1,0 +1,36 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  namespace: "kubenuts"
+  name: "weave-gitops"
+spec:
+  interval: 15m
+  timeout: 10m
+  releaseName: "weave-gitops"
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        namespace: "kubenuts"
+        name: "weave-gitops"
+      chart: weave-gitops
+      version: "4.0.36"
+  install:
+    remediation:
+      retries: 10
+  upgrade:
+    remediation:
+      retries: 10
+  valuesFrom:
+  - kind: ConfigMap
+    name: "weave-gitops-helm-values"
+    valuesKey: values.yaml
+  - kind: Secret
+    name: "weave-gitops"
+    valuesKey: username
+    targetPath: adminUser.username
+  - kind: Secret
+    name: "weave-gitops"
+    valuesKey: passwordHash
+    targetPath: adminUser.passwordHash

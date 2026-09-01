@@ -1,0 +1,25 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: "kubenuts"
+  name: "weave-gitops-helm-release"
+spec:
+  dependsOn:
+  - namespace: "kubenuts"
+    name: "weave-gitops-helm-values"
+  - namespace: "kubenuts"
+    name: "weave-gitops-secrets"
+  interval: 10m
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    namespace: flux-system
+    name: flux-system
+  path: "/manifests/weave-gitops/weave-gitops-helm-release"
+  targetNamespace: "kubenuts"
+  healthChecks:
+  - apiVersion: helm.toolkit.fluxcd.io/v2
+    kind: HelmRelease
+    namespace: "kubenuts"
+    name: "weave-gitops"

@@ -1,0 +1,19 @@
+# DO NOT EDIT.
+metadata:
+  name: weave-gitops
+  version: "4.0.36"
+  namespace: kubenuts
+
+# Properties that can be customized to suit your system needs.
+properties:
+  # The number of server pods to run
+  replicas: 1
+
+  # Resources to provide to the server pod
+  resources: {}
+    # requests:
+    #   cpu: 50m
+    #   memory: 100Mi
+    # limits:
+    #   cpu: 100m
+    #   memory: 200Mi

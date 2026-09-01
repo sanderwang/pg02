@@ -1,0 +1,20 @@
+---
+adminUser:
+  create: true
+image:
+  tag: v0.39.0-rc.2
+ingress:
+  enabled: false
+  annotations:
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+  className: nginx-internal
+  hosts:
+  - host: "fluxcd.pg02.narvar.qa"
+    paths:
+    - path: /
+      pathType: Prefix
+  tls:
+  - hosts:
+    - "fluxcd.pg02.narvar.qa"
+    secretName: "pg02-wildcard-cert"
+replicaCount: 1

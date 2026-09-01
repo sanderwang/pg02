@@ -8,3 +8,4 @@ resources:
 - gateway-api
 - kubenuts
 - reflector
+- weave-gitops
