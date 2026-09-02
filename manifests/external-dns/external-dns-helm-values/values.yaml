@@ -1,7 +1,6 @@
 ---
 extraArgs:
   aws-zone-type: public
-  ip-family: ipv4
   prefer-alias: true
 provider:
   name: aws
@@ -9,6 +8,9 @@ domainFilters:
 - "pg02.narvar.qa"
 logFormat: json
 logLevel: warning
+managedRecordTypes:
+- A
+- CNAME
 policy: sync
 serviceAccount:
   create: true
