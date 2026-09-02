@@ -1,18 +1,5 @@
 ---
 global:
-  env:
-  - name: REDIS_SERVER
-    valueFrom:
-      configMapKeyRef:
-        name: argocd-cmd-params-cm
-        key: redis.server
-        optional: true
-  - name: REDIS_PASSWORD
-    valueFrom:
-      secretKeyRef:
-        key: auth
-        name: argocd-redis
-        optional: false
   domain: "argocd.pg02.narvar.qa"
   logging:
     format: json
@@ -32,7 +19,6 @@ configs:
     applicationsetcontroller.namespaces: '*'
     applicationsetcontroller.tokenref.strict.mode: "true"
     notificationscontroller.selfservice.enabled: "true"
-    redis.server: argocd-redis-ha-haproxy:6379
     server.insecure: "true"
   rbac:
     create: true
