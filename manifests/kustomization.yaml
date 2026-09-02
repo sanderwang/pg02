@@ -9,6 +9,7 @@ resources:
 - flux-system
 - gateway-api
 - kubenuts
+- node-exporter
 - prometheus-crds
 - reflector
 - telemetry

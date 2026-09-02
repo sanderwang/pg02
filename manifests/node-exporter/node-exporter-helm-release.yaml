@@ -1,0 +1,23 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: "telemetry"
+  name: "node-exporter-helm-release"
+spec:
+  dependsOn:
+  - namespace: "telemetry"
+    name: "node-exporter-helm-values"
+  interval: 10m
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    namespace: flux-system
+    name: flux-system
+  path: "/manifests/node-exporter/node-exporter-helm-release"
+  targetNamespace: "telemetry"
+  healthChecks:
+  - apiVersion: helm.toolkit.fluxcd.io/v2
+    kind: HelmRelease
+    namespace: "telemetry"
+    name: "node-exporter"

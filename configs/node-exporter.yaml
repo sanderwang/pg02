@@ -1,0 +1,25 @@
+# Node Exporter collects hardware and OS-level metrics from nodes, providing visibility into
+# system health and performance.
+# Re: https://github.com/prometheus/node_exporter
+metadata:
+  name: node-exporter
+  version: 4.56.3
+  namespace: telemetry
+
+# Properties that can be customized to suit your system needs.
+properties:
+  # -- Resources to provide to the node exporter pod
+  resources: {}
+    # requests:
+    #   cpu: 50m
+    #   memory: 100Mi
+    # limits:
+    #   cpu: 100m
+    #   memory: 200Mi
+
+  # -- Extra [Collectors](
+  # https://github.com/prometheus/node_exporter?tab=readme-ov-file#collectors
+  # ) for node exporter
+  extraArgs: []
+    # - --collector.processes
+    # - --collector.systemd
