@@ -2,12 +2,10 @@
 crds:
   enabled: false
   plain: false
-env:
-- name: VM_GATEWAY_API_ENABLED
-  value: "true"
 logLevel: error
 operator:
   disable_prometheus_converter: false
+  gateway_support: true
   enable_converter_ownership: true
   prometheus_converter_add_argocd_ignore_annotations: true
 replicaCount: 1
