@@ -1,0 +1,16 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- victoria-metrics-cluster-helm-release.yaml
+- victoria-metrics-cluster-helm-values.yaml
+- victoria-metrics-helm-repository.yaml
+- victoria-metrics-namespace.yaml
+- victoria-metrics-secret-store.yaml
+- victoria-metrics-crds-helm-release.yaml
+- victoria-metrics-operator-helm-release.yaml
+- victoria-metrics-operator-helm-values.yaml
+- victoria-metrics-scrape-targets.yaml
+- victoria-metrics-agent.yaml
+- victoria-metrics-auth.yaml
+- victoria-metrics-grafana-datasource.yaml

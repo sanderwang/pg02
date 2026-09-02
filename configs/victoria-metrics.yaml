@@ -1,0 +1,204 @@
+# Victoria Metrics suite.
+# Re: https://victoriametrics.com/
+metadata:
+  name: victoria-metrics
+  version: 1.150.0
+  namespace: victoria-metrics
+
+# Properties that can be customized to suit your system needs.
+properties:
+  # vmagent component configuration.
+  vmagent:
+    # -- Enable vmagent component
+    enabled: true
+
+    # -- Specify the number of shards of vmagent
+    shards: 1
+
+    # -- Specify the number of vmagent pods per shard
+    replicas: 1
+
+    # -- Resources to provide to the vmagent pod.
+    # See vminsert.resources for sub-fields
+    resources: {}
+
+    # -- The amount of storage that the vmagent container can use
+    storageSize: 4Gi
+
+    # -- How often metrics are scraped from targets by default
+    scrapeInterval: 20s
+
+    # -- Default timeout for targets scrape
+    scrapeTimeout: 20s
+
+    # -- Remote write configuration. When not specified and vminsert is enabled, metrics are
+    # pushed to vminsert by default
+    remoteWrite: []
+      # - url: http://victoria-metrics-insert:8480/insert/0/prometheus
+      #   inlineUrlRelabelConfig:
+      #   - action: keep
+      #     regex: dev
+      #     source_labels: [env]
+
+    # -- Additional scrape configs to extend the default scraping behavior
+    extraScrapeConfigs: []
+      # - job_name: "custom-app"
+      #   metrics_path: /metrics
+      #   scrape_interval: 30s
+      #   static_configs:
+      #     - targets:
+      #         - custom-app.default.svc.cluster.local:8080
+
+    # -- Global relabeling rules applied to all metrics before they are sent to remote storage
+    relabelConfig: []
+      # - action: drop
+      #   regex: go_sched_.*
+      #   sourceLabels: [__name__]
+
+    # -- Extra command line arguments for vmagent component. See [List of command-line flags
+    # for vmagent](
+    # https://docs.victoriametrics.com/victoriametrics/vmagent/#common-flags
+    # )
+    extraArgs:
+      promscrape.maxScrapeSize: 64MB
+
+  # vmauth component configuration.
+  vmauth:
+    # -- Enable vmauth component
+    enabled: true
+
+    # -- Specify the minimum number of vmauth pods
+    minReplicas: 1
+    # -- Specify the maximum number of vmauth pods. Setting maxReplicas to be the same as
+    # minReplicas will disable autoscaling
+    maxReplicas: 1
+
+    # -- Resources to provide to the vmauth pod
+    resources: {}
+      # requests:
+      #   cpu: 50m
+      #   memory: 100Mi
+      # limits:
+      #   cpu: 100m
+      #   memory: 200Mi
+
+    # -- Extra command line arguments for vmauth component. See [List of command-line flags for
+    # vmauth](
+    # https://docs.victoriametrics.com/victoriametrics/vmauth/#common-flags
+    # )
+    extraArgs: {}
+
+  # vminsert component configuration.
+  vminsert:
+    # -- Enable vminsert component
+    enabled: true
+
+    # -- Specify the minimum number of vminsert pods
+    minReplicas: 2
+    # -- Specify the maximum number of vminsert pods. Setting maxReplicas to be the same as
+    # minReplicas will disable autoscaling
+    maxReplicas: 2
+
+    # -- Resources to provide to the vminsert pod
+    resources: {}
+      # requests:
+      #   cpu: 50m
+      #   memory: 100Mi
+      # limits:
+      #   cpu: 100m
+      #   memory: 200Mi
+
+    # -- Extra command line arguments for vminsert component. See [List of command-line flags
+    # for vminsert](
+    # https://docs.victoriametrics.com/victoriametrics/cluster-victoriametrics/#list-of-command-line-flags-for-vminsert
+    # )
+    extraArgs: {}
+
+    # -- Relabel configuration
+    relabel: []
+      # - action: drop
+      #   regex: kube-state-metrics
+      #   source_labels: [job]
+
+  # vmselect component configuration.
+  vmselect:
+    # -- Enable vmselect component
+    enabled: true
+
+    # -- Specify the minimum number of vmselect pods
+    minReplicas: 1
+    # -- Specify the maximum number of vmselect pods. Setting maxReplicas to be the same as
+    # minReplicas will disable autoscaling
+    maxReplicas: 1
+
+    # -- Resources to provide to the vmselect pod.
+    # See vminsert.resources for sub-fields
+    resources: {}
+
+    # -- The amount of storage that the vmselect container can use
+    storageSize: 4Gi
+
+    # -- Extra command line arguments for vmselect component. See [List of command-line flags
+    # for vmselect](
+    # https://docs.victoriametrics.com/victoriametrics/cluster-victoriametrics/#list-of-command-line-flags-for-vmselect
+    # )
+    extraArgs:
+      search.maxQueryLen: 5MB
+
+  # vmstorage component configuration.
+  vmstorage:
+    # -- Enable vmstorage component
+    enabled: true
+
+    # -- The number of vmstorage pods to run
+    replcias: 1
+
+    # -- Resources to provide to the vmstorage pod.
+    # See vminsert.resources for sub-fields
+    resources: {}
+
+    # -- Data retention period. Possible units character: h(ours), d(ays), w(eeks), y(ears), if
+    # no unit character specified - month. The minimum retention period is 24h. See [Retention](
+    # https://docs.victoriametrics.com/victoriametrics/single-server-victoriametrics/#retention
+    # )
+    retentionPeriod: 30d
+
+    # -- The amount of storage that the vmstorage container can use
+    storageSize: 32Gi
+
+    # -- Extra command line arguments for vmstorage component. See [List of command-line flags
+    # for vmstorage](
+    # https://docs.victoriametrics.com/victoriametrics/cluster-victoriametrics/#list-of-command-line-flags-for-vmstorage
+    # )
+    extraArgs: {}
+
+  # Victoria Metrics CRDs configuration.
+  crds:
+    # -- Deploy the CRDs.
+    enabled: true
+
+  # Victoria Metrics operator configuration.
+  operator:
+    # -- Deploy the operator.
+    enabled: true
+
+    # -- The number of operator pods to run
+    replicas: 1
+
+    # -- Resources to provide to the operator pod
+    resources: {}
+      # requests:
+      #   cpu: 50m
+      #   memory: 100Mi
+      # limits:
+      #   cpu: 100m
+      #   memory: 200Mi
+
+  # -- The list of targets to be scraped. To disable a target, remove it from the list or comment
+  # it out.
+  scrapeTargets:
+    - kube-apiserver
+    - kubelet-cadvisor
+    - kubelet-core
+    # - kubelet-probes
+    # - kubelet-resources

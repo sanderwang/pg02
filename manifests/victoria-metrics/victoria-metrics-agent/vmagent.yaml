@@ -1,0 +1,37 @@
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMAgent
+metadata:
+  namespace: "victoria-metrics"
+  name: "victoria-metrics"
+spec:
+  externalLabels:
+    cluster: eks-playground
+  extraArgs:
+    promscrape.dropOriginalLabels: "true"
+    promscrape.streamParse: "true"
+    promscrape.maxScrapeSize: "64MB"
+  minScrapeInterval: 15s
+  podDisruptionBudget:
+    maxUnavailable: 1
+  port: "8429"
+  remoteWrite:
+    - url: http://vmauth-victoria-metrics.victoria-metrics:8427/insert/0/prometheus/api/v1/write
+  replicaCount: 1
+  serviceScrapeSpec:
+    endpoints:
+      - port: http
+        relabelConfigs:
+        - replacement: vmagent
+          targetLabel: job
+  scrapeInterval: 20s
+  scrapeTimeout: 20s
+  selectAllByDefault: true
+  shardCount: 1
+  statefulMode: true
+  statefulStorage:
+    volumeClaimTemplate:
+      spec:
+        resources:
+          requests:
+            storage: 4Gi

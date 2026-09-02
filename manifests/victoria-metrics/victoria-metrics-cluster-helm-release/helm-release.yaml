@@ -1,0 +1,28 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  namespace: "victoria-metrics"
+  name: "victoria-metrics-cluster"
+spec:
+  interval: 30m
+  timeout: 15m
+  releaseName: "victoria-metrics-cluster"
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        namespace: "victoria-metrics"
+        name: "victoria-metrics"
+      chart: victoria-metrics-cluster
+      version: "0.49.0"
+  install:
+    remediation:
+      retries: 10
+  upgrade:
+    remediation:
+      retries: 10
+  valuesFrom:
+  - kind: ConfigMap
+    name: "victoria-metrics-cluster-helm-values"
+    valuesKey: values.yaml

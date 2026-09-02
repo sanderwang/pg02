@@ -11,4 +11,5 @@ resources:
 - prometheus-crds
 - reflector
 - telemetry
+- victoria-metrics
 - weave-gitops
