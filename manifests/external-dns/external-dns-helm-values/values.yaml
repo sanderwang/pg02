@@ -1,6 +1,7 @@
 ---
 extraArgs:
   aws-zone-type: public
+  ip-family: ipv4
   prefer-alias: true
 provider:
   name: aws
