@@ -9,4 +9,5 @@ resources:
 - gateway-api
 - kubenuts
 - reflector
+- telemetry
 - weave-gitops

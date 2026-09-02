@@ -26,8 +26,6 @@ spec:
     port: 443
     tls:
       mode: Terminate
-      certificateRefs:
-      - name: "pg02-wildcard-cert"
     allowedRoutes:
       namespaces:
         from: Selector
