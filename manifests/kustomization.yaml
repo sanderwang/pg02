@@ -11,6 +11,7 @@ resources:
 - kube-state-metrics
 - kubenuts
 - node-exporter
+- polaris
 - prometheus-crds
 - reflector
 - telemetry

@@ -1,0 +1,9 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  namespace: "polaris"
+  name: "polaris"
+spec:
+  interval: 3h
+  url: https://charts.fairwinds.com/stable

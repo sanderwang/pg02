@@ -1,0 +1,18 @@
+---
+audit:
+  enable: false
+dashboard:
+  ingress:
+    enabled: false
+    annotations:
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    hosts:
+    - "polaris.pg02.narvar.qa"
+    ingressClassName: nginx-internal
+    tls:
+    - hosts:
+      - "polaris.pg02.narvar.qa"
+      secretName: "pg02-wildcard-cert"
+  replicas: 1
+webhook:
+  enable: false

@@ -1,0 +1,22 @@
+# Polaris is a policy engine for Kubernetes that validates and remediates resource configuration.
+# Re: https://github.com/FairwindsOps/polaris
+metadata:
+  name: polaris
+  version: "6.0.0"
+  namespace: polaris
+
+# Properties that can be customized to suit your system needs.
+properties:
+  # Polaris dashboard configuration.
+  dashboard:
+    # -- The number of dashboard pods to run
+    replicas: 1
+
+    # -- Resources to provide to the dashboard pod
+    resources: {}
+      # requests:
+      #   cpu: 50m
+      #   memory: 100Mi
+      # limits:
+      #   cpu: 100m
+      #   memory: 200Mi
