@@ -1,0 +1,20 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: "telemetry"
+  name: "prometheus-crds-helm-release"
+spec:
+  interval: 10m
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    namespace: flux-system
+    name: flux-system
+  path: "/manifests/prometheus-crds/prometheus-crds-helm-release"
+  targetNamespace: "telemetry"
+  healthChecks:
+  - apiVersion: helm.toolkit.fluxcd.io/v2
+    kind: HelmRelease
+    namespace: "telemetry"
+    name: "prometheus-crds"

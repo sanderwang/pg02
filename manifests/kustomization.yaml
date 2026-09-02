@@ -8,6 +8,7 @@ resources:
 - flux-system
 - gateway-api
 - kubenuts
+- prometheus-crds
 - reflector
 - telemetry
 - weave-gitops
