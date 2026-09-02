@@ -1,0 +1,107 @@
+---
+global:
+  env:
+  - name: REDIS_SERVER
+    valueFrom:
+      configMapKeyRef:
+        name: argocd-cmd-params-cm
+        key: redis.server
+        optional: true
+  - name: REDIS_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        key: auth
+        name: argocd-redis
+        optional: false
+  domain: "argocd.pg02.narvar.qa"
+  logging:
+    format: json
+    level: warn
+configs:
+  cm:
+    admin.enabled: "true"
+    exec.enabled: true
+    statusbadge.enabled: true
+    timeout.hard.reconciliation: 0s
+    timeout.reconciliation: 180s
+    timeout.reconciliation.jitter: 60s
+    url: "https://argocd.pg02.narvar.qa"
+  params:
+    application.namespaces: '*'
+    applicationsetcontroller.enable.scm.providers: "false"
+    applicationsetcontroller.namespaces: '*'
+    applicationsetcontroller.tokenref.strict.mode: "true"
+    notificationscontroller.selfservice.enabled: "true"
+    redis.server: argocd-redis-ha-haproxy:6379
+    server.insecure: "true"
+  rbac:
+    create: true
+    policy.default: 'role:""'
+    scopes: "[groups, email]"
+  secret:
+    createSecret: false
+applicationSet:
+  allowAnyNamespace: true
+  replicas: 1
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+controller:
+  replicas: 1
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+dex:
+  enabled: false
+notifications:
+  enabled: false
+redis:
+  enabled: false
+redis-ha:
+  enabled: true
+  podDisruptionBudget:
+    maxUnavailable: 1
+repoServer:
+  replicas: 1
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+server:
+  replicas: 1
+  httproute:
+    enabled: true
+    hostnames:
+    - "argocd.pg02.narvar.qa"
+    parentRefs:
+    - name: kubenuts-internal
+      namespace: kubenuts
+      sectionName: https
+  ingress:
+    enabled: false
+    annotations:
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    ingressClassName: nginx-internal
+    tls: false
+    extraTls:
+    - hosts:
+      - "argocd.pg02.narvar.qa"
+      secretName: "pg02-wildcard-cert"
+  ingressGrpc:
+    enabled: false
+    annotations:
+      nginx.ingress.kubernetes.io/backend-protocol: GRPC
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    ingressClassName: nginx-internal
+    hostname: "argocd-grpc.pg02.narvar.qa"
+    tls: false
+    extraTls:
+    - hosts:
+      - "argocd-grpc.pg02.narvar.qa"
+      secretName: "pg02-wildcard-cert"
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true

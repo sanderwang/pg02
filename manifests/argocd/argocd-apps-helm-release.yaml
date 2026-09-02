@@ -1,0 +1,25 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: "argocd"
+  name: "argocd-apps-helm-release"
+spec:
+  dependsOn:
+  - namespace: "argocd"
+    name: "argocd-helm-release"
+  - namespace: "argocd"
+    name: "argocd-apps-helm-values"
+  interval: 10m
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    namespace: flux-system
+    name: flux-system
+  path: "/manifests/argocd/argocd-apps-helm-release"
+  targetNamespace: "argocd"
+  healthChecks:
+  - apiVersion: helm.toolkit.fluxcd.io/v2
+    kind: HelmRelease
+    namespace: "argocd"
+    name: "argocd-apps"

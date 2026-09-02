@@ -1,0 +1,28 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  namespace: "argocd"
+  name: "argocd"
+spec:
+  interval: 15m
+  timeout: 10m
+  releaseName: "argocd"
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        namespace: "argocd"
+        name: "argocd"
+      chart: argo-cd
+      version: "10.6.4"
+  install:
+    remediation:
+      retries: 10
+  upgrade:
+    remediation:
+      retries: 10
+  valuesFrom:
+  - kind: ConfigMap
+    name: "argocd-helm-values"
+    valuesKey: values.yaml

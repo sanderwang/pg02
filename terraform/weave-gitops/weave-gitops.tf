@@ -1,6 +1,7 @@
 
 resource "aws_secretsmanager_secret" "weave-gitops" {
-  name = "pg02/kubenuts/weave-gitops"
+  name                    = "pg02/kubenuts/weave-gitops"
+  recovery_window_in_days = 0
 }
 
 resource "aws_secretsmanager_secret_version" "weave-gitops" {

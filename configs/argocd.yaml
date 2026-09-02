@@ -1,0 +1,228 @@
+# Argo CD is a declarative, GitOps continuous delivery tool for Kubernetes.
+# Re: https://argo-cd.readthedocs.io/en/stable/
+metadata:
+  name: argocd
+  version: "10.6.4"
+  namespace: argocd
+
+# Properties that can be customized to suit your system needs.
+properties:
+  # ApplicationSet controller configuration.
+  applicationSet:
+    # -- The number of ApplicationSet controller pods to run
+    replicas: 1
+
+    # -- Resources to provide to the ApplicationSet controller pod
+    resources: {}
+      # requests:
+      #   cpu: 50m
+      #   memory: 100Mi
+      # limits:
+      #   cpu: 100m
+      #   memory: 200Mi
+
+  # Application controller configuration.
+  controller:
+    # -- The number of application controller pods to run
+    replicas: 1
+
+    # -- Resources to provide to the application controller pod.
+    # See applicationSet.resources for sub-fields
+    resources: {}
+
+  # Dex can be used to delegate authentication to external identity providers like GitHub, Google
+  # and others. Reference:
+  # https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/#dex
+  dex:
+    # -- Enable Dex server
+    enabled: false
+
+    # GitHub OAuth2 configuration. The GitHub OAuth App "Authorization callback URL" must be:
+    # https://<argocd-domain>/api/dex/callback
+    github:
+      # -- Enable GitHub OAuth2. When enabled, the OAuth2 client ID and secret key will be loaded
+      # from the external secret manager
+      enabled: false
+
+      # -- Only required for GitHub Enterprise (e.g. github.your-org.com)
+      hostName: ""
+
+      # -- GitHub organization whitelist (at least one required)
+      organizations: []
+        # - your-github-org
+
+    # Google (G-Suite) OAuth2 configuration. Use this option if you require Google Group membership
+    # in your RBAC configuration, otherwise you should use dex.oidc. A Google service account will
+    # be required to connect to the Google Directory API and pull information
+    # about your user's group membership. Reference: [OpenID Connect plus Google Groups using Dex](
+    # https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/google/#openid-connect-plus-google-groups-using-dex
+    # ).
+    google:
+      # -- Enable Google OAuth2. When enabled, the OAuth2 client ID and secret key, as well as
+      # the Google service account key, will be loaded from the external secret manager
+      enabled: false
+
+      # -- The email address for an admin user on your-org.com. Dex will impersonate that user
+      # identity to fetch user information from the API.
+      adminEmail: ""
+
+    # OIDC authentication configuration. When enabled, the OAuth2 client ID and secret key will be
+    # loaded from the external secret manager.
+    oidc:
+      # -- Enable OIDC authentication
+      enabled: false
+
+      # -- Issuer URL of the OIDC provider (e.g. https://example-OIDC-provider.example.com)
+      issuer: ""
+
+      # -- By default Dex only retrieves the "profile" and "email" scopes. If your OIDC provider
+      # also supports "groups" scope, you can enable this option to retrieve it.
+      # Reference: [Requesting additional ID token claims](
+      # https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/#requesting-additional-id-token-claims
+      # )
+      enableGroups: false
+
+    # -- Resources to provide to the Dex server pod.
+    # See applicationSet.resources for sub-fields
+    resources: {}
+
+  # Notification configuration.
+  notifications:
+    # -- Enable notifications controller
+    enabled: false
+
+    # Slack notifications. Reference: [Slack](
+    # https://argo-cd.readthedocs.io/en/stable/operator-manual/notifications/services/slack/
+    # ).
+    slack:
+      # -- Enable Slack notifications. When enabled, the Slack OAuth token will be loaded from
+      # the external secret manager.
+      enabled: false
+
+      # -- The default Slack subscriptions that are applied to all applications. Each subscription
+      # contains the name of the target Slack channel and a list of Argo CD application events
+      # that will trigger notifications. For a complete list of triggers: [Triggers](
+      # https://argo-cd.readthedocs.io/en/stable/operator-manual/notifications/catalog/#triggers
+      # ).
+      #
+      # Note subscriptions can also be configured on a per-application basis, using
+      # notifications.argoproj.io/subscribe.<trigger>.<service>: <recipient> annotation. For more
+      # infromation: [Subscriptions](
+      # https://argo-cd.readthedocs.io/en/stable/operator-manual/notifications/subscriptions/
+      # )
+      subscriptions: {}
+        # slack-channel1:
+        # - on-created
+        # - on-deleted
+        # slack-channel2:
+        # - on-sync-failed
+        # - on-sync-status-unknown
+        # - on-sync-succeeded
+
+    # -- Resources to provide to the notifications controller pod.
+    # See applicationSet.resources for sub-fields.
+    resources: {}
+
+  # Repo server configuration.
+  repoServer:
+    # -- Specify the minimum number of repo server pods
+    minReplicas: 1
+    # -- Specify the maximum number of repo server pods. Setting maxReplicas to be the same as
+    # minReplicas will disable autoscaling
+    maxReplicas: 1
+
+    # -- Resources to provide to the repo server pod.
+    # See applicationSet.resources for sub-fields
+    resources: {}
+
+  # Server configuration.
+  server:
+    # -- Specify the minimum number of server pods
+    minReplicas: 1
+    # -- Specify the maximum number of server pods. Setting maxReplicas to be the same as
+    # minReplicas will disable autoscaling
+    maxReplicas: 1
+
+    # -- Resources to provide to the server pod.
+    # See applicationSet.resources for sub-fields
+    resources: {}
+
+  # -- Repository credentials. Currently supported repository types: `helm`, `git`. The actual
+  # credentials will be loaded from the external secret manager.
+  # Reference: [Repository Credentials](
+  # https://argo-cd.readthedocs.io/en/stable/operator-manual/declarative-setup/#repository-credentials
+  # )
+  repoCreds: []
+    # - name: your-org
+    #   type: git
+    #   url: https://github.com/your-org
+
+  # -- Local users. User credentials are loaded from the external secret manager
+  users: {}
+    # alice: {}
+    # john: {}
+
+  # -- RBAC roles. Each role has a list of members. The members can be SSO groups or local users
+  roles: {}
+    # developers:
+    #   members:
+    #   - alice
+    #   - developers@your-org.com
+    #   - your-github-org:team-devs
+    # testers:
+    #   members:
+    #   - john
+    #   - testers@your-org.com
+
+  # -- Each application group provides a logical grouping of user applications
+  appGroups: {}
+    # development:
+    #   # Optional group description.
+    #   description: Development team managed applications
+
+    #   # Group owners. The owners must be the roles defined above. If empty, only admin users will
+    #   # have access to the grouped applications.
+    #   owners:
+    #   - developers
+
+    #   # Each source references the location of grouped application manifests.
+    #   # At least one source must be specified.
+    #   sources:
+    #   -
+    #     # The URL to the Git repository that contains the application manifests.
+    #     repoURL: https://github.com/your-org/dev-apps
+    #     # The revision of the source to sync the applications to.
+    #     targetRevision: HEAD
+    #     # A directory path within the Git repository.
+    #     path: argocd-apps/
+
+    #   # A list of repository URLs that can be used for deployment.
+    #   # Repositories referenced in `sources` are included automatically and do not need to be
+    #   # specified again here.
+    #   sourceRepos:
+    #   - https://github.com/another-org/helm-charts
+
+    #   # Namespaces in which Application resources are allowed to be created and trusted by Argo CD.
+    #   # If empty, all local cluster namespaces defined in `destinations` are used.
+    #   sourceNamespaces:
+    #   - dev1
+
+    #   # A list of destinations available for deployment.
+    #   destinations:
+    #   -
+    #     # The URL of the target cluster’s Kubernetes API server.
+    #     # If empty, defaults to the local cluster (https://kubernetes.default.svc)
+    #     server: https://kubernetes.default.svc
+    #     # The target namespace for the applications' resources.
+    #     namespace: dev1
+    #   - namespace: dev2
+
+    #   # Optional list of blacklisted cluster level resources.
+    #   clusterResourceBlacklist:
+    #   - group: rbac.authorization.k8s.io
+    #     kind: ClusterRole
+
+    #   # Optional list of whitelisted cluster level resources.
+    #   clusterResourceWhitelist:
+    #   - group: ''
+    #     kind: PersistentVolume
