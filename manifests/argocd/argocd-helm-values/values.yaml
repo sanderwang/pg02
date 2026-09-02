@@ -16,8 +16,8 @@ configs:
   params:
     application.namespaces: '*'
     applicationsetcontroller.enable.scm.providers: "false"
+    applicationsetcontroller.enable.tokenref.strict.mode: "true"
     applicationsetcontroller.namespaces: '*'
-    applicationsetcontroller.tokenref.strict.mode: "true"
     notificationscontroller.selfservice.enabled: "true"
     server.insecure: "true"
   rbac:
