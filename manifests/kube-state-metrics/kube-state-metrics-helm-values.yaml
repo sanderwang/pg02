@@ -1,0 +1,20 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: "telemetry"
+  name: "kube-state-metrics-helm-values"
+spec:
+  interval: 10m
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    namespace: flux-system
+    name: flux-system
+  path: "/manifests/kube-state-metrics/kube-state-metrics-helm-values"
+  targetNamespace: "telemetry"
+  healthChecks:
+  - apiVersion: v1
+    kind: ConfigMap
+    namespace: "telemetry"
+    name: "kube-state-metrics-helm-values"

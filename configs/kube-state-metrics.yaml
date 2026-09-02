@@ -1,0 +1,62 @@
+# kube-state-metrics exposes Kubernetes object state as metrics, enabling detailed cluster
+# monitoring and alerting.
+# Re: https://github.com/kubernetes/kube-state-metrics
+metadata:
+  name: kube-state-metrics
+  version: 8.4.1
+  namespace: telemetry
+
+# Properties that can be customized to suit your system needs.
+properties:
+  # -- The number of kube-state-metrics pods to run
+  replicas: 1
+
+  # -- Resources to provide to the kube-state-metrics pod
+  resources: {}
+    # requests:
+    #   cpu: 50m
+    #   memory: 100Mi
+    # limits:
+    #   cpu: 100m
+    #   memory: 200Mi
+
+  # -- Available collectors for kube-state-metrics. To disable a collector, remove it from the
+  # list or comment it out
+  collectors:
+    - certificatesigningrequests
+    - configmaps
+    - cronjobs
+    - daemonsets
+    - deployments
+    - endpointslices
+    - horizontalpodautoscalers
+    - ingresses
+    - jobs
+    - leases
+    - limitranges
+    - mutatingwebhookconfigurations
+    - namespaces
+    - networkpolicies
+    - nodes
+    - persistentvolumeclaims
+    - persistentvolumes
+    - poddisruptionbudgets
+    - pods
+    - replicasets
+    - replicationcontrollers
+    - resourcequotas
+    - secrets
+    - services
+    - statefulsets
+    - storageclasses
+    - validatingwebhookconfigurations
+    - volumeattachments
+    # - ingressclasses
+    # - clusterrolebindings
+    # - clusterroles
+    # - roles
+
+  # -- Extra [command line arguments](
+  # https://github.com/kubernetes/kube-state-metrics/blob/main/docs/developer/cli-arguments.md
+  # ) for kube-state-metrics
+  extraArgs: []

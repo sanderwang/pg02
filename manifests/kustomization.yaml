@@ -8,6 +8,7 @@ resources:
 - external-secrets
 - flux-system
 - gateway-api
+- kube-state-metrics
 - kubenuts
 - node-exporter
 - prometheus-crds
