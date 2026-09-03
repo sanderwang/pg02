@@ -1,0 +1,23 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  namespace: "telemetry"
+  name: "opencost-cloud-integration"
+stringData:
+  cloud-integration.json: |
+    {
+      "aws": {
+        "athena": [{
+          "bucket": "s3://pg02-cur/athena",
+          "region": "us-west-2",
+          "database": "pg02_cur",
+          "table": "pg02_cur",
+          "workgroup": "pg02-opencost",
+          "account": "472882997329",
+          "authorizer": {
+            "authorizerType": "AWSServiceAccount"
+          }
+        }]
+      }
+    }

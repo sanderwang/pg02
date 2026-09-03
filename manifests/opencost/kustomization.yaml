@@ -6,3 +6,4 @@ resources:
 - opencost-helm-release.yaml
 - opencost-helm-repository.yaml
 - opencost-helm-values.yaml
+- opencost-secrets.yaml

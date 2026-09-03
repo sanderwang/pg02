@@ -17,3 +17,9 @@ provider "aws" {
   allowed_account_ids = ["472882997329"]
   region              = "us-west-2"
 }
+
+provider "aws" {
+  alias               = "billing"
+  allowed_account_ids = ["472882997329"]
+  region              = "us-east-1"
+}

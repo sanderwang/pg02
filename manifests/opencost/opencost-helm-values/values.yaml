@@ -9,7 +9,8 @@ extraVolumes:
 loglevel: warn
 opencost:
   cloudCost:
-    enabled: false
+    enabled: true
+  cloudIntegrationSecret: "opencost-cloud-integration"
   customPricing:
     enabled: true
     createConfigmap: true
