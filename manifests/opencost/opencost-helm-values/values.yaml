@@ -1,11 +1,5 @@
 ---
 clusterName: cluster.local
-extraVolumes:
-- name: custom-metrics
-  configMap:
-    name: opencost-custom-metrics
-- name: extra-configs
-  emptyDir: {}
 loglevel: warn
 opencost:
   cloudCost:
@@ -23,12 +17,6 @@ opencost:
     defaultClusterId: "eks-playground"
     extraArgs:
     - log-format=json
-    extraVolumeMounts:
-    - name: custom-metrics
-      mountPath: /var/configs/metrics.json
-      subPath: metrics.json
-    - name: extra-configs
-      mountPath: /var/configs
     persistence:
       accessMode: ReadWriteOnce
       enabled: true
