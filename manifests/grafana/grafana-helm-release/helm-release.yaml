@@ -1,0 +1,28 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  namespace: "telemetry"
+  name: "grafana"
+spec:
+  interval: 30m
+  timeout: 15m
+  releaseName: "grafana"
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        namespace: "telemetry"
+        name: "grafana"
+      chart: grafana
+      version: "13.0.1"
+  install:
+    remediation:
+      retries: 10
+  upgrade:
+    remediation:
+      retries: 10
+  valuesFrom:
+  - kind: ConfigMap
+    name: "grafana-helm-values"
+    valuesKey: values.yaml

@@ -1,0 +1,88 @@
+---
+admin:
+  existingSecret: grafana
+  userKey: adminUser
+  passwordKey: adminPassword
+grafana.ini:
+  analytics:
+    enabled: false
+  auth:
+    disable_login_form: false
+  auth.anonymous:
+    enabled: true
+    org_role: Viewer
+  auth.basic:
+    enabled: true
+  auth.github:
+    enabled: false
+  log:
+    mode: console
+  log.console:
+    format: json
+    level: warn
+  panels:
+    disable_sanitize_html: false
+  server:
+    root_url: https://monitoring.pg02.narvar.qa
+ingress:
+  annotations:
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+  enabled: false
+  hosts:
+  - monitoring.pg02.narvar.qa
+  ingressClassName: nginx-internal
+  tls:
+  - hosts:
+    - monitoring.pg02.narvar.qa
+    secretName: pg02-wildcard-cert
+persistence:
+  enabled: true
+  size: 4Gi
+  type: StatefulSet
+plugins:
+  - grafana-piechart-panel
+replicas: 1
+route:
+  main:
+    enabled: true
+    hostnames:
+    - monitoring.pg02.narvar.qa
+    parentRefs:
+    - name: kubenuts-internal
+      namespace: kubenuts
+      sectionName: https
+serviceMonitor:
+  enabled: false
+sidecar:
+  alerts:
+    enabled: false
+  dashboards:
+    defaultFolderName: dashboards
+    enabled: true
+    folder: /mnt/grafana
+    folderAnnotation: kubenuts/grafana-folder
+    label: kubenuts/grafana
+    labelValue: dashboard
+    logLevel: WARN
+    provider:
+      foldersFromFilesStructure: true
+      name: sidecarProvider
+      orgid: 1
+    resource: configmap
+    SCProvider: true
+    searchNamespace: ALL
+  datasources:
+    enabled: true
+    label: kubenuts/grafana
+    labelValue: datasource
+    logLevel: WARN
+    resource: both
+    searchNamespace: ALL
+  notifiers:
+    enabled: false
+  plugins:
+    enabled: false
+  resources: {}
+testFramework:
+  enabled: false
+useStatefulSet: true

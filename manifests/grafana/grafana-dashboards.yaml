@@ -1,0 +1,44 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: "telemetry"
+  name: "grafana-dashboards"
+spec:
+  interval: 10m
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    namespace: flux-system
+    name: flux-system
+  path: "/manifests/grafana/grafana-dashboards"
+  targetNamespace: "telemetry"
+  healthChecks:
+    - apiVersion: v1
+      kind: ConfigMap
+      namespace: "telemetry"
+      name: "grafana-dashboard-node-exporter-full"
+    - apiVersion: v1
+      kind: ConfigMap
+      namespace: "telemetry"
+      name: "grafana-dashboard-kubernetes-views-global"
+    - apiVersion: v1
+      kind: ConfigMap
+      namespace: "telemetry"
+      name: "grafana-dashboard-kubernetes-views-namespaces"
+    - apiVersion: v1
+      kind: ConfigMap
+      namespace: "telemetry"
+      name: "grafana-dashboard-kubernetes-views-nodes"
+    - apiVersion: v1
+      kind: ConfigMap
+      namespace: "telemetry"
+      name: "grafana-dashboard-kubernetes-views-pods"
+    - apiVersion: v1
+      kind: ConfigMap
+      namespace: "telemetry"
+      name: "grafana-dashboard-kubernetes-system-api-server"
+    - apiVersion: v1
+      kind: ConfigMap
+      namespace: "telemetry"
+      name: "grafana-dashboard-resource-efficiency"

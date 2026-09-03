@@ -1,0 +1,62 @@
+# Grafana is a platform for visualizing metrics, logs, and traces through interactive dashboards.
+# Re: https://grafana.com/oss/
+metadata:
+  name: grafana
+  version: "13.0.1"
+  namespace: telemetry
+
+# Properties that can be customized to suit your system needs.
+properties:
+  # -- Resources to provide to the grafana pod
+  resources: {}
+    # requests:
+    #   cpu: 50m
+    #   memory: 100Mi
+    # limits:
+    #   cpu: 100m
+    #   memory: 200Mi
+
+  # -- The amount of storage that the grafana container can use
+  storageSize: 4Gi
+
+  # Grafana authentication settings.
+  auth:
+    # Allow access without logging in.
+    anonymous:
+      # -- Enable anonymous access (view dashboards only)
+      enabled: true
+
+    # [GitHub OAuth2 configuration](
+    # https://grafana.com/docs/grafana/latest/setup-grafana/configure-access/configure-authentication/github
+    # ).
+    github:
+      # -- Enable GitHub OAuth2. When enabled, the OAuth2 client ID and secret key will be loaded
+      # from the external secret manager
+      enabled: false
+
+      # -- Only required for GitHub Enterprise (e.g. github.your-org.com)
+      hostName: ""
+
+      # -- GitHub organization whitelist (at least one required)
+      organizations: []
+        # - your-github-org
+
+      # -- JMESPath expression to use for grafana role lookup. See [role_attribute_path](
+      # https://grafana.com/docs/grafana/latest/setup-grafana/configure-access/configure-authentication/github/#configuration-options
+      # )
+      roleAttributePath: "'Viewer'"
+
+  # -- Default dashboards to be provisioned by Grafana. To disable a dashboard, remove it from
+  # the list or comment it out. Details for each dashboard can be found at:
+  # https://grafana.com/grafana/dashboards/$id
+  dashboards:
+  - 1860-node-exporter-full
+  - 15757-kubernetes-views-global
+  - 15758-kubernetes-views-namespaces
+  - 15759-kubernetes-views-nodes
+  - 15760-kubernetes-views-pods
+  - 15761-kubernetes-system-api-server
+  - 24131-resource-efficiency
+
+  # -- Additional Grafana plugins to install
+  plugins: []
