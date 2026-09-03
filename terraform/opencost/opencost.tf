@@ -15,17 +15,26 @@ resource "aws_s3_bucket_policy" "opencost-spot-feed" {
 
   policy = jsonencode({
     Version = "2012-10-17"
-    Statement = [{
-      Effect    = "Allow"
-      Principal = { Service = "ec2.amazonaws.com" }
-      Action    = "s3:PutObject"
-      Resource  = "${aws_s3_bucket.opencost-spot-feed.arn}/*"
-      Condition = {
-        StringEquals = {
-          "aws:SourceAccount" = "472882997329"
+    Statement = [
+      {
+        Effect    = "Allow"
+        Principal = { Service = "ec2.amazonaws.com" }
+        Action    = ["s3:GetBucketAcl", "s3:GetBucketLocation"]
+        Resource  = aws_s3_bucket.opencost-spot-feed.arn
+        Condition = {
+          StringEquals = { "aws:SourceAccount" = "472882997329" }
+        }
+      },
+      {
+        Effect    = "Allow"
+        Principal = { Service = "ec2.amazonaws.com" }
+        Action    = "s3:PutObject"
+        Resource  = "${aws_s3_bucket.opencost-spot-feed.arn}/*"
+        Condition = {
+          StringEquals = { "aws:SourceAccount" = "472882997329" }
         }
       }
-    }]
+    ]
   })
 }
 
