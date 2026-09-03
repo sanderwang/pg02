@@ -7,6 +7,10 @@ prometheus:
   monitor:
     enabled: true
     jobLabel: jobLabel
+    relabelings:
+    - sourceLabels:
+      - __meta_kubernetes_pod_node_name
+      targetLabel: node
     metricRelabelings:
     - action: drop
       regex: /var/lib/kubelet/pods.+
