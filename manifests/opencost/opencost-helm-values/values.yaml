@@ -10,6 +10,14 @@ loglevel: warn
 opencost:
   cloudCost:
     enabled: false
+  customPricing:
+    enabled: true
+    createConfigmap: true
+    costModel:
+      awsSpotDataBucket: "pg02-spot-feed"
+      awsSpotDataPrefix: "spot-feed"
+      awsSpotDataRegion: "us-west-2"
+      projectID: "472882997329"
   exporter:
     defaultClusterId: "eks-playground"
     extraArgs:

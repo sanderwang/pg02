@@ -6,6 +6,17 @@ data "aws_iam_openid_connect_provider" "this" {
   url = data.aws_eks_cluster.this.identity[0].oidc[0].issuer
 }
 
+resource "aws_s3_bucket" "opencost-spot-feed" {
+  bucket = "pg02-spot-feed"
+}
+
+resource "aws_spot_datafeed_subscription" "opencost" {
+  bucket = aws_s3_bucket.opencost-spot-feed.bucket
+  prefix = "spot-feed"
+
+  depends_on = [aws_s3_bucket.opencost-spot-feed]
+}
+
 data "aws_iam_policy_document" "opencost-trust" {
   statement {
     effect  = "Allow"
@@ -33,8 +44,20 @@ data "aws_iam_policy_document" "opencost-trust" {
 data "aws_iam_policy_document" "opencost-access" {
   statement {
     effect    = "Allow"
-    actions   = ["pricing:GetProducts", "ec2:DescribeSpotPriceHistory"]
+    actions   = ["ec2:DescribeSpotPriceHistory", "pricing:GetProducts"]
     resources = ["*"]
+  }
+
+  statement {
+    effect    = "Allow"
+    actions   = ["s3:HeadBucket", "s3:ListBucket"]
+    resources = [aws_s3_bucket.opencost-spot-feed.arn]
+  }
+
+  statement {
+    effect    = "Allow"
+    actions   = ["s3:GetObject", "s3:HeadObject"]
+    resources = ["${aws_s3_bucket.opencost-spot-feed.arn}/*"]
   }
 }
 
