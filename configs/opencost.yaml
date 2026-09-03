@@ -1,0 +1,52 @@
+# OpenCost provides real-time cost monitoring for Kubernetes workloads, helping teams understand
+# and optimize their cloud spending.
+# Re: https://github.com/opencost/opencost
+metadata:
+  name: opencost
+  version: 2.5.30
+  namespace: telemetry
+
+# Properties that can be customized to suit your system needs.
+properties:
+  # -- The number of cost exporter pods to run
+  replicas: 1
+
+  # -- Resources to provide to the cost exporter pod
+  resources: {}
+    # requests:
+    #   cpu: 50m
+    #   memory: 100Mi
+    # limits:
+    #   cpu: 100m
+    #   memory: 200Mi
+
+  # -- Specify how long OpenCost keeps daily aggregated data, in days
+  retention1d: 30
+
+  # -- Specify how long OpenCost keeps high-resolution, hourly data, in hours
+  retention1h: 169
+
+  # -- The amount of storage that the cost exporter container can use
+  storageSize: 4Gi
+
+  # Cost reconciliation.
+  reconciledCosts:
+    # -- Enable cost reconciliation. When true, OpenCost supplements real-time estimated "list
+    # prices" with actual billing data from the cloud provider. This ensures accurate visibility
+    # into negotiated discounts, spot pricing, and credits.
+    enabled: true
+
+  # Grafana configuration.
+  grafana:
+    # -- Dashboards to be provisioned by Grafana. To disable a dashboard, remove it from the list
+    # or comment it out. Details for each dashboard can be found at:
+    # https://grafana.com/grafana/dashboards/$id
+    dashboards:
+    - 22208-opencost-overview
+    - 22252-opencost-namespace
+
+  # Prometheus configuration.
+  prometheus:
+    # -- URL of an external Prometheus instance. If empty, the KubeNutty-managed Victoria Metrics
+    # instance is used
+    externalUrl: ''

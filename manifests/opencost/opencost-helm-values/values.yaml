@@ -1,0 +1,88 @@
+---
+clusterName: cluster.local
+extraVolumes:
+- name: custom-metrics
+  configMap:
+    name: opencost-custom-metrics
+- name: extra-configs
+  emptyDir: {}
+loglevel: warn
+opencost:
+  cloudCost:
+    enabled: false
+  exporter:
+    defaultClusterId: "eks-playground"
+    extraArgs:
+    - log-format=json
+    extraVolumeMounts:
+    - name: custom-metrics
+      mountPath: /var/configs/metrics.json
+      subPath: metrics.json
+    - name: extra-configs
+      mountPath: /var/configs
+    persistence:
+      accessMode: ReadWriteOnce
+      enabled: true
+      size: 4Gi
+    prometheusDataSource:
+      queryResolutionSeconds: 300
+    replicas: 1
+  metrics:
+    config:
+      enabled: true
+      configmapName: opencost-custom-metrics
+      disabledMetrics:
+      - kube_node_status_allocatable
+      - kube_node_status_capacity
+      - kube_pod_owner
+    kubeStateMetrics:
+      emitKsmV1Metrics: false
+      emitKsmV1MetricsOnly: true
+    serviceMonitor:
+      enabled: true
+  prometheus:
+    external:
+      enabled: false
+    internal:
+      enabled: true
+      namespaceName: victoria-metrics
+      path: /select/0/prometheus
+      port: 8427
+      scheme: http
+      serviceName: vmauth-victoria-metrics
+  retention1d: 30
+  retention1h: 169
+  ui:
+    enabled: true
+    ingress:
+      enabled: false
+      hosts:
+      - host: "cost.pg02.narvar.qa"
+        paths:
+        - /
+      ingressClassName: nginx-internal
+      tls:
+      - hosts:
+        - "cost.pg02.narvar.qa"
+        secretName: "pg02-wildcard-cert"
+    httpRoute:
+      enabled: true
+      hostnames:
+      - cost.pg02.narvar.qa
+      parentRefs:
+      - name: kubenuts-internal
+        namespace: kubenuts
+        sectionName: https
+    resources:
+      limits:
+        memory: 2Gi
+      requests:
+        cpu: 100m
+        memory: 100Mi
+pdb:
+  enabled: true
+  maxUnavailable: 1
+serviceAccount:
+  create: true
+  annotations:
+    eks.amazonaws.com/role-arn: "arn:aws:iam::472882997329:role/pg02-opencost"

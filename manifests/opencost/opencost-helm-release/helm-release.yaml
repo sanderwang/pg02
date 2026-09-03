@@ -1,0 +1,28 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  namespace: "telemetry"
+  name: "opencost"
+spec:
+  interval: 30m
+  timeout: 10m
+  releaseName: "opencost"
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        namespace: "telemetry"
+        name: "opencost"
+      chart: opencost
+      version: "2.5.30"
+  install:
+    remediation:
+      retries: 10
+  upgrade:
+    remediation:
+      retries: 10
+  valuesFrom:
+  - kind: ConfigMap
+    name: "opencost-helm-values"
+    valuesKey: values.yaml
