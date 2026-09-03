@@ -7,7 +7,7 @@ data "aws_iam_openid_connect_provider" "this" {
 }
 
 resource "aws_s3_bucket" "opencost-spot-feed" {
-  bucket = "pg02-spot-feed"
+  bucket = "472882997329-pg02-spot-feed"
 }
 
 resource "aws_s3_bucket_ownership_controls" "opencost-spot-feed" {
@@ -25,7 +25,7 @@ resource "aws_spot_datafeed_subscription" "opencost" {
 }
 
 resource "aws_s3_bucket" "opencost-cur" {
-  bucket = "pg02-cur"
+  bucket = "472882997329-pg02-cur"
 }
 
 data "aws_iam_policy_document" "opencost-cur-bucket" {

@@ -9,7 +9,7 @@ stringData:
     {
       "aws": {
         "athena": [{
-          "bucket": "s3://pg02-cur/athena",
+          "bucket": "s3://472882997329-pg02-cur/athena",
           "region": "us-west-2",
           "database": "pg02_cur",
           "table": "pg02_cur",
