@@ -9,7 +9,7 @@ opencost:
     enabled: true
     createConfigmap: true
     costModel:
-      awsSpotDataBucket: "pg02-spot-feed"
+      awsSpotDataBucket: "472882997329-pg02-spot-feed"
       awsSpotDataPrefix: "spot-feed"
       awsSpotDataRegion: "us-west-2"
       projectID: "472882997329"
