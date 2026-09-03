@@ -13,7 +13,7 @@ metadata:
     kubenuts/grafana: dashboard
     grafana_dashboard: "1"
 data:
-  1860-node-exporter-full.rev42.json: |
+  1860-node-exporter-full.rev45.json: |
     {
       "__requires": [
         {
@@ -184,7 +184,7 @@ data:
             {
               "editorMode": "code",
               "exemplar": false,
-              "expr": "irate(node_pressure_cpu_waiting_seconds_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+              "expr": "rate(node_pressure_cpu_waiting_seconds_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
               "format": "time_series",
               "instant": true,
               "legendFormat": "CPU",
@@ -195,7 +195,7 @@ data:
             {
               "editorMode": "code",
               "exemplar": false,
-              "expr": "irate(node_pressure_memory_waiting_seconds_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+              "expr": "rate(node_pressure_memory_waiting_seconds_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
               "format": "time_series",
               "instant": true,
               "legendFormat": "Mem",
@@ -206,7 +206,7 @@ data:
             {
               "editorMode": "code",
               "exemplar": false,
-              "expr": "irate(node_pressure_io_waiting_seconds_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+              "expr": "rate(node_pressure_io_waiting_seconds_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
               "format": "time_series",
               "instant": true,
               "legendFormat": "I/O",
@@ -217,7 +217,7 @@ data:
             {
               "editorMode": "code",
               "exemplar": false,
-              "expr": "irate(node_pressure_irq_stalled_seconds_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+              "expr": "rate(node_pressure_irq_stalled_seconds_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
               "format": "time_series",
               "instant": true,
               "legendFormat": "Irq",
@@ -301,7 +301,7 @@ data:
             {
               "editorMode": "code",
               "exemplar": false,
-              "expr": "100 * (1 - avg(rate(node_cpu_seconds_total{mode=\"idle\", instance=\"$node\"}[$__rate_interval])))",
+              "expr": "100 * (1 - avg(rate(node_cpu_seconds_total{mode=\"idle\",instance=\"$node\",job=\"$job\"}[$__rate_interval])))",
               "instant": true,
               "legendFormat": "",
               "range": false,
@@ -317,7 +317,7 @@ data:
             "type": "prometheus",
             "uid": "${ds_prometheus}"
           },
-          "description": "System load  over all CPU cores together",
+          "description": "System load over all CPU cores together",
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -540,7 +540,7 @@ data:
             {
               "editorMode": "code",
               "exemplar": false,
-              "expr": "((node_memory_SwapTotal_bytes{instance=\"$node\",job=\"$job\"} - node_memory_SwapFree_bytes{instance=\"$node\",job=\"$job\"}) / (node_memory_SwapTotal_bytes{instance=\"$node\",job=\"$job\"})) * 100",
+              "expr": "(node_memory_SwapTotal_bytes{instance=\"$node\",job=\"$job\"} > bool 0) * ((node_memory_SwapTotal_bytes{instance=\"$node\",job=\"$job\"} - node_memory_SwapFree_bytes{instance=\"$node\",job=\"$job\"}) / (node_memory_SwapTotal_bytes{instance=\"$node\",job=\"$job\"})) * 100",
               "instant": true,
               "range": false,
               "refId": "A",
@@ -1202,7 +1202,7 @@ data:
             {
               "editorMode": "code",
               "exemplar": false,
-              "expr": "sum(irate(node_cpu_seconds_total{instance=\"$node\",job=\"$job\", mode=\"system\"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance=\"$node\",job=\"$job\"}) by (cpu)))",
+              "expr": "avg(rate(node_cpu_seconds_total{instance=\"$node\",job=\"$job\", mode=\"system\"}[$__rate_interval]))",
               "format": "time_series",
               "instant": false,
               "legendFormat": "Busy System",
@@ -1212,7 +1212,7 @@ data:
             },
             {
               "editorMode": "code",
-              "expr": "sum(irate(node_cpu_seconds_total{instance=\"$node\",job=\"$job\", mode=\"user\"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance=\"$node\",job=\"$job\"}) by (cpu)))",
+              "expr": "avg(rate(node_cpu_seconds_total{instance=\"$node\",job=\"$job\", mode=\"user\"}[$__rate_interval]))",
               "format": "time_series",
               "legendFormat": "Busy User",
               "range": true,
@@ -1221,7 +1221,7 @@ data:
             },
             {
               "editorMode": "code",
-              "expr": "sum(irate(node_cpu_seconds_total{instance=\"$node\",job=\"$job\", mode=\"iowait\"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance=\"$node\",job=\"$job\"}) by (cpu)))",
+              "expr": "avg(rate(node_cpu_seconds_total{instance=\"$node\",job=\"$job\", mode=\"iowait\"}[$__rate_interval]))",
               "format": "time_series",
               "legendFormat": "Busy Iowait",
               "range": true,
@@ -1230,7 +1230,7 @@ data:
             },
             {
               "editorMode": "code",
-              "expr": "sum(irate(node_cpu_seconds_total{instance=\"$node\",job=\"$job\", mode=~\".*irq\"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance=\"$node\",job=\"$job\"}) by (cpu)))",
+              "expr": "avg(sum without(mode) (rate(node_cpu_seconds_total{instance=\"$node\",job=\"$job\", mode=~\".*irq\"}[$__rate_interval])))",
               "format": "time_series",
               "legendFormat": "Busy IRQs",
               "range": true,
@@ -1239,7 +1239,7 @@ data:
             },
             {
               "editorMode": "code",
-              "expr": "sum(irate(node_cpu_seconds_total{instance=\"$node\",job=\"$job\",  mode!='idle',mode!='user',mode!='system',mode!='iowait',mode!='irq',mode!='softirq'}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance=\"$node\",job=\"$job\"}) by (cpu)))",
+              "expr": "avg(sum without (mode) (rate(node_cpu_seconds_total{instance=\"$node\",job=\"$job\",  mode!='idle',mode!='user',mode!='system',mode!='iowait',mode!='irq',mode!='softirq'}[$__rate_interval])))",
               "format": "time_series",
               "legendFormat": "Busy Other",
               "range": true,
@@ -1248,7 +1248,7 @@ data:
             },
             {
               "editorMode": "code",
-              "expr": "sum(irate(node_cpu_seconds_total{instance=\"$node\",job=\"$job\", mode=\"idle\"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance=\"$node\",job=\"$job\"}) by (cpu)))",
+              "expr": "avg(rate(node_cpu_seconds_total{instance=\"$node\",job=\"$job\", mode=\"idle\"}[$__rate_interval]))",
               "format": "time_series",
               "legendFormat": "Idle",
               "range": true,
@@ -1568,7 +1568,7 @@ data:
               "editorMode": "code",
               "expr": "rate(node_network_transmit_bytes_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])*8",
               "format": "time_series",
-              "legendFormat": "Tx {{device}} ",
+              "legendFormat": "Tx {{device}}",
               "range": true,
               "refId": "B",
               "step": 240
@@ -1661,7 +1661,7 @@ data:
           "targets": [
             {
               "editorMode": "code",
-              "expr": "((node_filesystem_size_bytes{instance=\"$node\", job=\"$job\", device!~\"rootfs\"} - node_filesystem_avail_bytes{instance=\"$node\", job=\"$job\", device!~\"rootfs\"}) / node_filesystem_size_bytes{instance=\"$node\", job=\"$job\", device!~\"rootfs\"}) * 100",
+              "expr": "((node_filesystem_size_bytes{instance=\"$node\", job=\"$job\", device!~'rootfs'} - node_filesystem_avail_bytes{instance=\"$node\", job=\"$job\", device!~'rootfs'}) / node_filesystem_size_bytes{instance=\"$node\", job=\"$job\", device!~'rootfs'}) * 100",
               "format": "time_series",
               "legendFormat": "{{mountpoint}}",
               "range": true,
@@ -1920,7 +1920,7 @@ data:
               "targets": [
                 {
                   "editorMode": "code",
-                  "expr": "sum(irate(node_cpu_seconds_total{mode=\"system\",instance=\"$node\",job=\"$job\"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance=\"$node\",job=\"$job\"}) by (cpu)))",
+                  "expr": "sum(rate(node_cpu_seconds_total{mode=\"system\",instance=\"$node\",job=\"$job\"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance=\"$node\",job=\"$job\"}) by (cpu)))",
                   "format": "time_series",
                   "interval": "",
                   "legendFormat": "System - Processes executing in kernel mode",
@@ -1930,7 +1930,7 @@ data:
                 },
                 {
                   "editorMode": "code",
-                  "expr": "sum(irate(node_cpu_seconds_total{mode=\"user\",instance=\"$node\",job=\"$job\"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance=\"$node\",job=\"$job\"}) by (cpu)))",
+                  "expr": "sum(rate(node_cpu_seconds_total{mode=\"user\",instance=\"$node\",job=\"$job\"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance=\"$node\",job=\"$job\"}) by (cpu)))",
                   "format": "time_series",
                   "legendFormat": "User - Normal processes executing in user mode",
                   "range": true,
@@ -1939,7 +1939,7 @@ data:
                 },
                 {
                   "editorMode": "code",
-                  "expr": "sum(irate(node_cpu_seconds_total{mode=\"nice\",instance=\"$node\",job=\"$job\"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance=\"$node\",job=\"$job\"}) by (cpu)))",
+                  "expr": "sum(rate(node_cpu_seconds_total{mode=\"nice\",instance=\"$node\",job=\"$job\"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance=\"$node\",job=\"$job\"}) by (cpu)))",
                   "format": "time_series",
                   "legendFormat": "Nice - Niced processes executing in user mode",
                   "range": true,
@@ -1948,7 +1948,7 @@ data:
                 },
                 {
                   "editorMode": "code",
-                  "expr": "sum(irate(node_cpu_seconds_total{mode=\"iowait\",instance=\"$node\",job=\"$job\"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance=\"$node\",job=\"$job\"}) by (cpu)))",
+                  "expr": "sum(rate(node_cpu_seconds_total{mode=\"iowait\",instance=\"$node\",job=\"$job\"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance=\"$node\",job=\"$job\"}) by (cpu)))",
                   "format": "time_series",
                   "legendFormat": "Iowait - Waiting for I/O to complete",
                   "range": true,
@@ -1957,7 +1957,7 @@ data:
                 },
                 {
                   "editorMode": "code",
-                  "expr": "sum(irate(node_cpu_seconds_total{mode=\"irq\",instance=\"$node\",job=\"$job\"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance=\"$node\",job=\"$job\"}) by (cpu)))",
+                  "expr": "sum(rate(node_cpu_seconds_total{mode=\"irq\",instance=\"$node\",job=\"$job\"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance=\"$node\",job=\"$job\"}) by (cpu)))",
                   "format": "time_series",
                   "legendFormat": "Irq - Servicing interrupts",
                   "range": true,
@@ -1966,7 +1966,7 @@ data:
                 },
                 {
                   "editorMode": "code",
-                  "expr": "sum(irate(node_cpu_seconds_total{mode=\"softirq\",instance=\"$node\",job=\"$job\"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance=\"$node\",job=\"$job\"}) by (cpu)))",
+                  "expr": "sum(rate(node_cpu_seconds_total{mode=\"softirq\",instance=\"$node\",job=\"$job\"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance=\"$node\",job=\"$job\"}) by (cpu)))",
                   "format": "time_series",
                   "legendFormat": "Softirq - Servicing softirqs",
                   "range": true,
@@ -1975,7 +1975,7 @@ data:
                 },
                 {
                   "editorMode": "code",
-                  "expr": "sum(irate(node_cpu_seconds_total{mode=\"steal\",instance=\"$node\",job=\"$job\"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance=\"$node\",job=\"$job\"}) by (cpu)))",
+                  "expr": "sum(rate(node_cpu_seconds_total{mode=\"steal\",instance=\"$node\",job=\"$job\"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance=\"$node\",job=\"$job\"}) by (cpu)))",
                   "format": "time_series",
                   "legendFormat": "Steal - Time spent in other operating systems when running in a virtualized environment",
                   "range": true,
@@ -1984,7 +1984,7 @@ data:
                 },
                 {
                   "editorMode": "code",
-                  "expr": "sum(irate(node_cpu_seconds_total{mode=\"idle\",instance=\"$node\",job=\"$job\"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance=\"$node\",job=\"$job\"}) by (cpu)))",
+                  "expr": "sum(rate(node_cpu_seconds_total{mode=\"idle\",instance=\"$node\",job=\"$job\"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance=\"$node\",job=\"$job\"}) by (cpu)))",
                   "format": "time_series",
                   "legendFormat": "Idle - Waiting for something to happen",
                   "range": true,
@@ -1993,7 +1993,7 @@ data:
                 },
                 {
                   "editorMode": "code",
-                  "expr": "sum by(instance) (irate(node_cpu_guest_seconds_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])) / on(instance) group_left sum by (instance)((irate(node_cpu_seconds_total{instance=\"$node\",job=\"$job\"}[$__rate_interval]))) > 0",
+                  "expr": "sum by(instance) (rate(node_cpu_guest_seconds_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])) / on(instance) group_left sum by (instance)((rate(node_cpu_seconds_total{instance=\"$node\",job=\"$job\"}[$__rate_interval]))) > 0",
                   "format": "time_series",
                   "legendFormat": "Guest CPU usage",
                   "range": true,
@@ -2110,36 +2110,6 @@ data:
                   {
                     "matcher": {
                       "id": "byName",
-                      "options": "Cached"
-                    },
-                    "properties": [
-                      {
-                        "id": "color",
-                        "value": {
-                          "fixedColor": "#511749",
-                          "mode": "fixed"
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "Committed"
-                    },
-                    "properties": [
-                      {
-                        "id": "color",
-                        "value": {
-                          "fixedColor": "#508642",
-                          "mode": "fixed"
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byName",
                       "options": "Free"
                     },
                     "properties": [
@@ -2170,21 +2140,6 @@ data:
                   {
                     "matcher": {
                       "id": "byName",
-                      "options": "Inactive"
-                    },
-                    "properties": [
-                      {
-                        "id": "color",
-                        "value": {
-                          "fixedColor": "#584477",
-                          "mode": "fixed"
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byName",
                       "options": "PageTables"
                     },
                     "properties": [
@@ -2192,36 +2147,6 @@ data:
                         "id": "color",
                         "value": {
                           "fixedColor": "#0A50A1",
-                          "mode": "fixed"
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "Page_Tables"
-                    },
-                    "properties": [
-                      {
-                        "id": "color",
-                        "value": {
-                          "fixedColor": "#0A50A1",
-                          "mode": "fixed"
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "RAM_Free"
-                    },
-                    "properties": [
-                      {
-                        "id": "color",
-                        "value": {
-                          "fixedColor": "#E0F9D7",
                           "mode": "fixed"
                         }
                       }
@@ -2245,21 +2170,6 @@ data:
                   {
                     "matcher": {
                       "id": "byName",
-                      "options": "Slab_Cache"
-                    },
-                    "properties": [
-                      {
-                        "id": "color",
-                        "value": {
-                          "fixedColor": "#E0752D",
-                          "mode": "fixed"
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byName",
                       "options": "Swap"
                     },
                     "properties": [
@@ -2267,51 +2177,6 @@ data:
                         "id": "color",
                         "value": {
                           "fixedColor": "#BF1B00",
-                          "mode": "fixed"
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "Swap - Swap memory usage"
-                    },
-                    "properties": [
-                      {
-                        "id": "color",
-                        "value": {
-                          "fixedColor": "#BF1B00",
-                          "mode": "fixed"
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "Swap_Cache"
-                    },
-                    "properties": [
-                      {
-                        "id": "color",
-                        "value": {
-                          "fixedColor": "#C15C17",
-                          "mode": "fixed"
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "Swap_Free"
-                    },
-                    "properties": [
-                      {
-                        "id": "color",
-                        "value": {
-                          "fixedColor": "#2F575E",
                           "mode": "fixed"
                         }
                       }
@@ -2694,7 +2559,7 @@ data:
               "targets": [
                 {
                   "editorMode": "code",
-                  "expr": "rate(node_network_receive_bytes_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])\n / ignoring(speed) node_network_speed_bytes{instance=\"$node\",job=\"$job\", speed!=\"-1\"}",
+                  "expr": "(node_network_speed_bytes{instance=\"$node\",job=\"$job\"} > bool 0) * (rate(node_network_receive_bytes_total{instance=\"$node\",job=\"$job\"}[$__rate_interval]) / node_network_speed_bytes{instance=\"$node\",job=\"$job\"})",
                   "format": "time_series",
                   "legendFormat": "{{device}} - Rx in",
                   "range": true,
@@ -2703,7 +2568,7 @@ data:
                 },
                 {
                   "editorMode": "code",
-                  "expr": "(rate(node_network_transmit_bytes_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])\n / ignoring(speed) node_network_speed_bytes{instance=\"$node\",job=\"$job\", speed!=\"-1\"})",
+                  "expr": "(node_network_speed_bytes{instance=\"$node\",job=\"$job\"} > bool 0) * (rate(node_network_transmit_bytes_total{instance=\"$node\",job=\"$job\"}[$__rate_interval]) / node_network_speed_bytes{instance=\"$node\",job=\"$job\"})",
                   "format": "time_series",
                   "legendFormat": "{{device}} - Tx out",
                   "range": true,
@@ -2805,7 +2670,7 @@ data:
                 },
                 "tooltip": {
                   "hideZeros": false,
-                  "mode": "single",
+                  "mode": "multi",
                   "sort": "none"
                 }
               },
@@ -2813,7 +2678,7 @@ data:
               "targets": [
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_disk_reads_completed_total{instance=\"$node\",job=\"$job\",device=~\"[a-z]+|nvme[0-9]+n[0-9]+|mmcblk[0-9]+\"}[$__rate_interval])",
+                  "expr": "rate(node_disk_reads_completed_total{instance=\"$node\",job=\"$job\",device=~\"[a-z]+|nvme[0-9]+n[0-9]+|mmcblk[0-9]+\"}[$__rate_interval])",
                   "legendFormat": "{{device}} - Read",
                   "range": true,
                   "refId": "A",
@@ -2821,7 +2686,7 @@ data:
                 },
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_disk_writes_completed_total{instance=\"$node\",job=\"$job\",device=~\"[a-z]+|nvme[0-9]+n[0-9]+|mmcblk[0-9]+\"}[$__rate_interval])",
+                  "expr": "rate(node_disk_writes_completed_total{instance=\"$node\",job=\"$job\",device=~\"[a-z]+|nvme[0-9]+n[0-9]+|mmcblk[0-9]+\"}[$__rate_interval])",
                   "legendFormat": "{{device}} - Write",
                   "range": true,
                   "refId": "B",
@@ -2891,7 +2756,7 @@ data:
                   {
                     "matcher": {
                       "id": "byRegexp",
-                      "options": "/.*Read*./"
+                      "options": "/.*Read.*/"
                     },
                     "properties": [
                       {
@@ -2930,7 +2795,7 @@ data:
               "targets": [
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_disk_read_bytes_total{instance=\"$node\",job=\"$job\",device=~\"[a-z]+|nvme[0-9]+n[0-9]+|mmcblk[0-9]+\"}[$__rate_interval])",
+                  "expr": "rate(node_disk_read_bytes_total{instance=\"$node\",job=\"$job\",device=~\"[a-z]+|nvme[0-9]+n[0-9]+|mmcblk[0-9]+\"}[$__rate_interval])",
                   "format": "time_series",
                   "legendFormat": "{{device}} - Read",
                   "range": true,
@@ -2939,7 +2804,7 @@ data:
                 },
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_disk_written_bytes_total{instance=\"$node\",job=\"$job\",device=~\"[a-z]+|nvme[0-9]+n[0-9]+|mmcblk[0-9]+\"}[$__rate_interval])",
+                  "expr": "rate(node_disk_written_bytes_total{instance=\"$node\",job=\"$job\",device=~\"[a-z]+|nvme[0-9]+n[0-9]+|mmcblk[0-9]+\"}[$__rate_interval])",
                   "format": "time_series",
                   "legendFormat": "{{device}} - Write",
                   "range": true,
@@ -3254,7 +3119,7 @@ data:
               "targets": [
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_disk_io_time_seconds_total{instance=\"$node\",job=\"$job\",device=~\"[a-z]+|nvme[0-9]+n[0-9]+|mmcblk[0-9]+\"} [$__rate_interval])",
+                  "expr": "rate(node_disk_io_time_seconds_total{instance=\"$node\",job=\"$job\",device=~\"[a-z]+|nvme[0-9]+n[0-9]+|mmcblk[0-9]+\"} [$__rate_interval])",
                   "format": "time_series",
                   "interval": "",
                   "legendFormat": "{{device}}",
@@ -3271,7 +3136,7 @@ data:
                 "type": "prometheus",
                 "uid": "${ds_prometheus}"
               },
-              "description": "How often tasks experience CPU, memory, or I/O delays. “Some” indicates partial slowdown; “Full” indicates all tasks are stalled. Based on Linux PSI metrics:\nhttps://docs.kernel.org/accounting/psi.html",
+              "description": "How often tasks experience CPU, memory, or I/O delays. 'Some' indicates partial slowdown; 'Full' indicates all tasks are stalled. Based on Linux PSI metrics:\nhttps://docs.kernel.org/accounting/psi.html",
               "fieldConfig": {
                 "defaults": {
                   "color": {
@@ -4629,23 +4494,7 @@ data:
                   },
                   "unit": "bytes"
                 },
-                "overrides": [
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "Hardware Corrupted - Amount of RAM that the kernel identified as corrupted / not working"
-                    },
-                    "properties": [
-                      {
-                        "id": "color",
-                        "value": {
-                          "fixedColor": "#CFFAFF",
-                          "mode": "fixed"
-                        }
-                      }
-                    ]
-                  }
-                ]
+                "overrides": []
               },
               "gridPos": {
                 "h": 10,
@@ -4757,278 +4606,7 @@ data:
                   },
                   "unit": "bytes"
                 },
-                "overrides": [
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "Active"
-                    },
-                    "properties": [
-                      {
-                        "id": "color",
-                        "value": {
-                          "fixedColor": "#99440A",
-                          "mode": "fixed"
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "Buffers"
-                    },
-                    "properties": [
-                      {
-                        "id": "color",
-                        "value": {
-                          "fixedColor": "#58140C",
-                          "mode": "fixed"
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "Cache"
-                    },
-                    "properties": [
-                      {
-                        "id": "color",
-                        "value": {
-                          "fixedColor": "#6D1F62",
-                          "mode": "fixed"
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "Cached"
-                    },
-                    "properties": [
-                      {
-                        "id": "color",
-                        "value": {
-                          "fixedColor": "#511749",
-                          "mode": "fixed"
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "Committed"
-                    },
-                    "properties": [
-                      {
-                        "id": "color",
-                        "value": {
-                          "fixedColor": "#508642",
-                          "mode": "fixed"
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "Dirty"
-                    },
-                    "properties": [
-                      {
-                        "id": "color",
-                        "value": {
-                          "fixedColor": "#6ED0E0",
-                          "mode": "fixed"
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "Free"
-                    },
-                    "properties": [
-                      {
-                        "id": "color",
-                        "value": {
-                          "fixedColor": "#B7DBAB",
-                          "mode": "fixed"
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "Inactive"
-                    },
-                    "properties": [
-                      {
-                        "id": "color",
-                        "value": {
-                          "fixedColor": "#EA6460",
-                          "mode": "fixed"
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "Mapped"
-                    },
-                    "properties": [
-                      {
-                        "id": "color",
-                        "value": {
-                          "fixedColor": "#052B51",
-                          "mode": "fixed"
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "PageTables"
-                    },
-                    "properties": [
-                      {
-                        "id": "color",
-                        "value": {
-                          "fixedColor": "#0A50A1",
-                          "mode": "fixed"
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "Page_Tables"
-                    },
-                    "properties": [
-                      {
-                        "id": "color",
-                        "value": {
-                          "fixedColor": "#0A50A1",
-                          "mode": "fixed"
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "Slab_Cache"
-                    },
-                    "properties": [
-                      {
-                        "id": "color",
-                        "value": {
-                          "fixedColor": "#EAB839",
-                          "mode": "fixed"
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "Swap"
-                    },
-                    "properties": [
-                      {
-                        "id": "color",
-                        "value": {
-                          "fixedColor": "#BF1B00",
-                          "mode": "fixed"
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "Swap_Cache"
-                    },
-                    "properties": [
-                      {
-                        "id": "color",
-                        "value": {
-                          "fixedColor": "#C15C17",
-                          "mode": "fixed"
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "Total"
-                    },
-                    "properties": [
-                      {
-                        "id": "color",
-                        "value": {
-                          "fixedColor": "#511749",
-                          "mode": "fixed"
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "Total RAM"
-                    },
-                    "properties": [
-                      {
-                        "id": "color",
-                        "value": {
-                          "fixedColor": "#052B51",
-                          "mode": "fixed"
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "Total RAM + Swap"
-                    },
-                    "properties": [
-                      {
-                        "id": "color",
-                        "value": {
-                          "fixedColor": "#052B51",
-                          "mode": "fixed"
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "VmallocUsed"
-                    },
-                    "properties": [
-                      {
-                        "id": "color",
-                        "value": {
-                          "fixedColor": "#EA6460",
-                          "mode": "fixed"
-                        }
-                      }
-                    ]
-                  }
-                ]
+                "overrides": []
               },
               "gridPos": {
                 "h": 10,
@@ -5176,7 +4754,7 @@ data:
               "targets": [
                 {
                   "editorMode": "code",
-                  "expr": "node_memory_HugePages_Free{instance=\"$node\",job=\"$job\"} * node_memory_Hugepagesize_bytes{instance=\"$node\",job=\"$job\"}",
+                  "expr": "(node_memory_HugePages_Total{instance=\"$node\",job=\"$job\"} - node_memory_HugePages_Free{instance=\"$node\",job=\"$job\"}) * node_memory_Hugepagesize_bytes{instance=\"$node\",job=\"$job\"}",
                   "format": "time_series",
                   "legendFormat": "HugePages Used – Currently allocated",
                   "range": true,
@@ -5327,7 +4905,7 @@ data:
               "targets": [
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_vmstat_pgpgin{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_vmstat_pgpgin{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "format": "time_series",
                   "legendFormat": "Pagesin - Page in ops",
                   "range": true,
@@ -5336,7 +4914,7 @@ data:
                 },
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_vmstat_pgpgout{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_vmstat_pgpgout{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "format": "time_series",
                   "legendFormat": "Pagesout - Page out ops",
                   "range": true,
@@ -5446,7 +5024,7 @@ data:
               "targets": [
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_vmstat_pswpin{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_vmstat_pswpin{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "format": "time_series",
                   "legendFormat": "Pswpin - Pages swapped in",
                   "range": true,
@@ -5455,7 +5033,7 @@ data:
                 },
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_vmstat_pswpout{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_vmstat_pswpout{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "format": "time_series",
                   "legendFormat": "Pswpout - Pages swapped out",
                   "range": true,
@@ -5591,7 +5169,7 @@ data:
               "targets": [
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_vmstat_pgfault{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_vmstat_pgfault{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "format": "time_series",
                   "legendFormat": "Pgfault - Page major and minor fault ops",
                   "range": true,
@@ -5600,7 +5178,7 @@ data:
                 },
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_vmstat_pgmajfault{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_vmstat_pgmajfault{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "format": "time_series",
                   "legendFormat": "Pgmajfault - Major page fault ops",
                   "range": true,
@@ -5609,7 +5187,7 @@ data:
                 },
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_vmstat_pgfault{instance=\"$node\",job=\"$job\"}[$__rate_interval])  - irate(node_vmstat_pgmajfault{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_vmstat_pgfault{instance=\"$node\",job=\"$job\"}[$__rate_interval])  - rate(node_vmstat_pgmajfault{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "format": "time_series",
                   "legendFormat": "Pgminfault - Minor page fault ops",
                   "range": true,
@@ -5723,7 +5301,7 @@ data:
               "targets": [
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_vmstat_oom_kill{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_vmstat_oom_kill{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "format": "time_series",
                   "interval": "",
                   "legendFormat": "OOM Kills",
@@ -6149,7 +5727,7 @@ data:
                       }
                     ]
                   },
-                  "unit": "rothz"
+                  "unit": "hertz"
                 },
                 "overrides": []
               },
@@ -6401,7 +5979,7 @@ data:
               "targets": [
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_timex_pps_calibration_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_timex_pps_calibration_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "format": "time_series",
                   "interval": "",
                   "legendFormat": "PPS Calibrations/sec",
@@ -6411,7 +5989,7 @@ data:
                 },
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_timex_pps_error_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_timex_pps_error_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "format": "time_series",
                   "interval": "",
                   "legendFormat": "PPS Errors/sec",
@@ -6421,7 +5999,7 @@ data:
                 },
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_timex_pps_stability_exceeded_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_timex_pps_stability_exceeded_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "format": "time_series",
                   "interval": "",
                   "legendFormat": "PPS Stability Exceeded/sec",
@@ -6431,7 +6009,7 @@ data:
                 },
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_timex_pps_jitter_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_timex_pps_jitter_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "format": "time_series",
                   "interval": "",
                   "legendFormat": "PPS Jitter Events/sec",
@@ -6839,7 +6417,7 @@ data:
               "targets": [
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_forks_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_forks_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "format": "time_series",
                   "legendFormat": "Process Forks per second",
                   "range": true,
@@ -6953,7 +6531,7 @@ data:
               "targets": [
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_schedstat_running_seconds_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_schedstat_running_seconds_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "format": "time_series",
                   "hide": true,
                   "interval": "",
@@ -6964,7 +6542,7 @@ data:
                 },
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_schedstat_waiting_seconds_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_schedstat_waiting_seconds_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "format": "time_series",
                   "hide": true,
                   "interval": "",
@@ -6975,7 +6553,7 @@ data:
                 },
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_schedstat_waiting_seconds_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])\n/\n(irate(node_schedstat_running_seconds_total{instance=\"$node\",job=\"$job\"}[$__rate_interval]) + irate(node_schedstat_waiting_seconds_total{instance=\"$node\",job=\"$job\"}[$__rate_interval]))\n",
+                  "expr": "((rate(node_schedstat_running_seconds_total{instance=\"$node\",job=\"$job\"}[$__rate_interval]) + rate(node_schedstat_waiting_seconds_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])) > bool 0) * (rate(node_schedstat_waiting_seconds_total{instance=\"$node\",job=\"$job\"}[$__rate_interval]) / (rate(node_schedstat_running_seconds_total{instance=\"$node\",job=\"$job\"}[$__rate_interval]) + rate(node_schedstat_waiting_seconds_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])))",
                   "format": "time_series",
                   "interval": "",
                   "legendFormat": "CPU {{cpu}}",
@@ -7366,7 +6944,7 @@ data:
               "targets": [
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_context_switches_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_context_switches_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "format": "time_series",
                   "legendFormat": "Context switches",
                   "range": true,
@@ -7375,7 +6953,7 @@ data:
                 },
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_intr_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_intr_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "format": "time_series",
                   "legendFormat": "Interrupts",
                   "range": true,
@@ -7812,7 +7390,7 @@ data:
               "targets": [
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_schedstat_timeslices_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_schedstat_timeslices_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "format": "time_series",
                   "interval": "",
                   "legendFormat": "CPU {{ cpu }}",
@@ -7911,7 +7489,7 @@ data:
               "targets": [
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_interrupts_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_interrupts_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "format": "time_series",
                   "interval": "",
                   "legendFormat": "{{ type }} - {{ info }}",
@@ -8135,7 +7713,7 @@ data:
                   {
                     "matcher": {
                       "id": "byRegexp",
-                      "options": "/.*Critical*./"
+                      "options": "/.*Critical.*/"
                     },
                     "properties": [
                       {
@@ -8213,7 +7791,7 @@ data:
                   "format": "time_series",
                   "hide": true,
                   "interval": "",
-                  "legendFormat": "{{ chip_name }} {{ sensor }} Critical Historical",
+                  "legendFormat": "{{ chip_name }} {{ sensor }} Critical Hysteresis",
                   "refId": "D",
                   "step": 240
                 },
@@ -8290,7 +7868,7 @@ data:
                   {
                     "matcher": {
                       "id": "byRegexp",
-                      "options": "/.*Max*./"
+                      "options": "/.*Max.*/"
                     },
                     "properties": [
                       {
@@ -8336,10 +7914,10 @@ data:
               "targets": [
                 {
                   "editorMode": "code",
-                  "expr": "100 * node_cooling_device_cur_state{instance=\"$node\",job=\"$job\"} / node_cooling_device_max_state{instance=\"$node\",job=\"$job\"}",
+                  "expr": "(node_cooling_device_max_state{instance=\"$node\",job=\"$job\"} > bool 0) * (100 * node_cooling_device_cur_state{instance=\"$node\",job=\"$job\"} / node_cooling_device_max_state{instance=\"$node\",job=\"$job\"})",
                   "format": "time_series",
                   "interval": "",
-                  "legendFormat": "{{ name }} - {{ type }} ",
+                  "legendFormat": "{{name}} - {{type}}",
                   "range": true,
                   "refId": "A",
                   "step": 240
@@ -8974,7 +8552,7 @@ data:
               "targets": [
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_systemd_socket_accepted_connections_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_systemd_socket_accepted_connections_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "format": "time_series",
                   "interval": "",
                   "legendFormat": "{{ name }}",
@@ -9073,7 +8651,7 @@ data:
               "targets": [
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_systemd_socket_refused_connections_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_systemd_socket_refused_connections_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "format": "time_series",
                   "interval": "",
                   "legendFormat": "{{ name }}",
@@ -9205,7 +8783,7 @@ data:
                 },
                 "tooltip": {
                   "hideZeros": false,
-                  "mode": "single",
+                  "mode": "multi",
                   "sort": "none"
                 }
               },
@@ -9213,7 +8791,7 @@ data:
               "targets": [
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_disk_reads_completed_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_disk_reads_completed_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "legendFormat": "{{device}} - Read",
                   "range": true,
                   "refId": "A",
@@ -9221,7 +8799,7 @@ data:
                 },
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_disk_writes_completed_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_disk_writes_completed_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "legendFormat": "{{device}} - Write",
                   "range": true,
                   "refId": "B",
@@ -9337,7 +8915,7 @@ data:
                 },
                 "tooltip": {
                   "hideZeros": false,
-                  "mode": "single",
+                  "mode": "multi",
                   "sort": "none"
                 }
               },
@@ -9345,7 +8923,7 @@ data:
               "targets": [
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_disk_read_bytes_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_disk_read_bytes_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "format": "time_series",
                   "legendFormat": "{{device}} - Read",
                   "range": true,
@@ -9355,7 +8933,7 @@ data:
                 {
                   "editorMode": "code",
                   "exemplar": false,
-                  "expr": "irate(node_disk_written_bytes_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_disk_written_bytes_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "format": "time_series",
                   "instant": false,
                   "legendFormat": "{{device}} - Write",
@@ -9473,7 +9051,7 @@ data:
                 },
                 "tooltip": {
                   "hideZeros": false,
-                  "mode": "single",
+                  "mode": "multi",
                   "sort": "none"
                 }
               },
@@ -9481,7 +9059,7 @@ data:
               "targets": [
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_disk_read_time_seconds_total{instance=\"$node\",job=\"$job\"}[$__rate_interval]) / irate(node_disk_reads_completed_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "(rate(node_disk_reads_completed_total{instance=\"$node\",job=\"$job\"}[$__rate_interval]) > bool 0) * (rate(node_disk_read_time_seconds_total{instance=\"$node\",job=\"$job\"}[$__rate_interval]) / rate(node_disk_reads_completed_total{instance=\"$node\",job=\"$job\"}[$__rate_interval]))",
                   "interval": "",
                   "legendFormat": "{{device}} - Read",
                   "range": true,
@@ -9490,7 +9068,7 @@ data:
                 },
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_disk_write_time_seconds_total{instance=\"$node\",job=\"$job\"}[$__rate_interval]) / irate(node_disk_writes_completed_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "(rate(node_disk_writes_completed_total{instance=\"$node\",job=\"$job\"}[$__rate_interval]) > bool 0) * (rate(node_disk_write_time_seconds_total{instance=\"$node\",job=\"$job\"}[$__rate_interval]) / rate(node_disk_writes_completed_total{instance=\"$node\",job=\"$job\"}[$__rate_interval]))",
                   "interval": "",
                   "legendFormat": "{{device}} - Write",
                   "range": true,
@@ -9596,7 +9174,7 @@ data:
                 },
                 "tooltip": {
                   "hideZeros": false,
-                  "mode": "single",
+                  "mode": "multi",
                   "sort": "none"
                 }
               },
@@ -9604,7 +9182,7 @@ data:
               "targets": [
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_disk_io_time_weighted_seconds_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_disk_io_time_weighted_seconds_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "interval": "",
                   "legendFormat": "{{device}}",
                   "range": true,
@@ -9721,7 +9299,7 @@ data:
                 },
                 "tooltip": {
                   "hideZeros": false,
-                  "mode": "single",
+                  "mode": "multi",
                   "sort": "none"
                 }
               },
@@ -9729,7 +9307,7 @@ data:
               "targets": [
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_disk_reads_merged_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_disk_reads_merged_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "legendFormat": "{{device}} - Read",
                   "range": true,
                   "refId": "A",
@@ -9737,7 +9315,7 @@ data:
                 },
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_disk_writes_merged_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_disk_writes_merged_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "legendFormat": "{{device}} - Write",
                   "range": true,
                   "refId": "B",
@@ -9842,7 +9420,7 @@ data:
                 },
                 "tooltip": {
                   "hideZeros": false,
-                  "mode": "single",
+                  "mode": "multi",
                   "sort": "none"
                 }
               },
@@ -9850,7 +9428,7 @@ data:
               "targets": [
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_disk_io_time_seconds_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_disk_io_time_seconds_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "interval": "",
                   "legendFormat": "{{device}} - General IO",
                   "range": true,
@@ -9859,7 +9437,7 @@ data:
                 },
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_disk_discard_time_seconds_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_disk_discard_time_seconds_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "interval": "",
                   "legendFormat": "{{device}} - Discard/TRIM",
                   "range": true,
@@ -9868,7 +9446,7 @@ data:
                 },
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_disk_flush_requests_time_seconds_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_disk_flush_requests_time_seconds_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "interval": "",
                   "legendFormat": "{{device}} - Flush (write cache)",
                   "range": true,
@@ -9973,7 +9551,7 @@ data:
                 },
                 "tooltip": {
                   "hideZeros": false,
-                  "mode": "single",
+                  "mode": "multi",
                   "sort": "none"
                 }
               },
@@ -9981,7 +9559,7 @@ data:
               "targets": [
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_disk_discards_completed_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_disk_discards_completed_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "interval": "",
                   "legendFormat": "{{device}} - Discards completed",
                   "range": true,
@@ -9990,7 +9568,7 @@ data:
                 },
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_disk_discards_merged_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_disk_discards_merged_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "interval": "",
                   "legendFormat": "{{device}} - Discards merged",
                   "range": true,
@@ -9999,7 +9577,7 @@ data:
                 },
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_disk_flush_requests_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_disk_flush_requests_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "interval": "",
                   "legendFormat": "{{device}} - Flush",
                   "range": true,
@@ -10104,7 +9682,7 @@ data:
                 },
                 "tooltip": {
                   "hideZeros": false,
-                  "mode": "single",
+                  "mode": "multi",
                   "sort": "none"
                 }
               },
@@ -10112,7 +9690,7 @@ data:
               "targets": [
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_disk_discarded_sectors_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_disk_discarded_sectors_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "interval": "",
                   "legendFormat": "{{device}}",
                   "range": true,
@@ -10218,7 +9796,7 @@ data:
                 },
                 "tooltip": {
                   "hideZeros": false,
-                  "mode": "single",
+                  "mode": "multi",
                   "sort": "none"
                 }
               },
@@ -10360,7 +9938,7 @@ data:
                 },
                 "tooltip": {
                   "hideZeros": false,
-                  "mode": "single",
+                  "mode": "multi",
                   "sort": "none"
                 }
               },
@@ -11204,7 +10782,7 @@ data:
                     "axisBorderShow": false,
                     "axisCenteredZero": false,
                     "axisColorMode": "text",
-                    "axisLabel": "out (-) / in (+)",
+                    "axisLabel": "",
                     "axisPlacement": "auto",
                     "barAlignment": 0,
                     "barWidthFactor": 0.6,
@@ -11245,20 +10823,7 @@ data:
                   },
                   "unit": "pps"
                 },
-                "overrides": [
-                  {
-                    "matcher": {
-                      "id": "byRegexp",
-                      "options": "/.*out.*/"
-                    },
-                    "properties": [
-                      {
-                        "id": "custom.transform",
-                        "value": "negative-Y"
-                      }
-                    ]
-                  }
-                ]
+                "overrides": []
               },
               "gridPos": {
                 "h": 10,
@@ -11315,7 +10880,7 @@ data:
                     "axisBorderShow": false,
                     "axisCenteredZero": false,
                     "axisColorMode": "text",
-                    "axisLabel": "out (-) / in (+)",
+                    "axisLabel": "",
                     "axisPlacement": "auto",
                     "barAlignment": 0,
                     "barWidthFactor": 0.6,
@@ -11356,20 +10921,7 @@ data:
                   },
                   "unit": "pps"
                 },
-                "overrides": [
-                  {
-                    "matcher": {
-                      "id": "byRegexp",
-                      "options": "/.*out.*/"
-                    },
-                    "properties": [
-                      {
-                        "id": "custom.transform",
-                        "value": "negative-Y"
-                      }
-                    ]
-                  }
-                ]
+                "overrides": []
               },
               "gridPos": {
                 "h": 10,
@@ -11426,7 +10978,7 @@ data:
                     "axisBorderShow": false,
                     "axisCenteredZero": false,
                     "axisColorMode": "text",
-                    "axisLabel": "out (-) / in (+)",
+                    "axisLabel": "",
                     "axisPlacement": "auto",
                     "barAlignment": 0,
                     "barWidthFactor": 0.6,
@@ -11467,20 +11019,7 @@ data:
                   },
                   "unit": "pps"
                 },
-                "overrides": [
-                  {
-                    "matcher": {
-                      "id": "byRegexp",
-                      "options": "/.*out.*/"
-                    },
-                    "properties": [
-                      {
-                        "id": "custom.transform",
-                        "value": "negative-Y"
-                      }
-                    ]
-                  }
-                ]
+                "overrides": []
               },
               "gridPos": {
                 "h": 10,
@@ -12091,7 +11630,7 @@ data:
                 "type": "prometheus",
                 "uid": "${ds_prometheus}"
               },
-              "description": "Operational and physical link status of each network interface. Values are Yes for 'up' or link present, and No for 'down' or no carrier.\"",
+              "description": "Operational and physical link status of each network interface. Values are Yes for 'up' or link present, and No for 'down' or no carrier.",
               "fieldConfig": {
                 "defaults": {
                   "color": {
@@ -13010,7 +12549,7 @@ data:
               "targets": [
                 {
                   "editorMode": "code",
-                  "expr": "node_sockstat_TCP_mem_bytes{instance=\"$node\",job=\"$job\"} / node_sockstat_TCP_inuse{instance=\"$node\",job=\"$job\"}",
+                  "expr": "(node_sockstat_TCP_inuse{instance=\"$node\",job=\"$job\"} > bool 0) * (node_sockstat_TCP_mem_bytes{instance=\"$node\",job=\"$job\"} / node_sockstat_TCP_inuse{instance=\"$node\",job=\"$job\"})",
                   "format": "time_series",
                   "interval": "",
                   "legendFormat": "TCP",
@@ -13020,7 +12559,7 @@ data:
                 },
                 {
                   "editorMode": "code",
-                  "expr": "node_sockstat_UDP_mem_bytes{instance=\"$node\",job=\"$job\"} / node_sockstat_UDP_inuse{instance=\"$node\",job=\"$job\"}",
+                  "expr": "(node_sockstat_UDP_inuse{instance=\"$node\",job=\"$job\"} > bool 0) * (node_sockstat_UDP_mem_bytes{instance=\"$node\",job=\"$job\"} / node_sockstat_UDP_inuse{instance=\"$node\",job=\"$job\"})",
                   "format": "time_series",
                   "interval": "",
                   "legendFormat": "UDP",
@@ -13242,7 +12781,7 @@ data:
               "targets": [
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_softnet_processed_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_softnet_processed_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "format": "time_series",
                   "interval": "",
                   "legendFormat": "CPU {{cpu}} - Processed",
@@ -13252,7 +12791,7 @@ data:
                 },
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_softnet_dropped_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_softnet_dropped_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "format": "time_series",
                   "interval": "",
                   "legendFormat": "CPU {{cpu}} - Dropped",
@@ -13355,7 +12894,7 @@ data:
               "targets": [
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_softnet_times_squeezed_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_softnet_times_squeezed_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "format": "time_series",
                   "interval": "",
                   "legendFormat": "CPU {{cpu}} - Times Squeezed",
@@ -13474,7 +13013,7 @@ data:
               "targets": [
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_softnet_received_rps_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_softnet_received_rps_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "format": "time_series",
                   "interval": "",
                   "legendFormat": "CPU {{cpu}} - Processed",
@@ -13484,7 +13023,7 @@ data:
                 },
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_softnet_flow_limit_count_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_softnet_flow_limit_count_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "format": "time_series",
                   "interval": "",
                   "legendFormat": "CPU {{cpu}} - Dropped",
@@ -13610,7 +13149,7 @@ data:
               "targets": [
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_netstat_IpExt_InOctets{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_netstat_IpExt_InOctets{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "format": "time_series",
                   "interval": "",
                   "legendFormat": "IP Rx in",
@@ -13620,7 +13159,7 @@ data:
                 },
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_netstat_IpExt_OutOctets{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_netstat_IpExt_OutOctets{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "format": "time_series",
                   "legendFormat": "IP Tx out",
                   "range": true,
@@ -13703,13 +13242,6 @@ data:
                         "value": "negative-Y"
                       }
                     ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byRegexp",
-                      "options": "/.*Snd.*/"
-                    },
-                    "properties": []
                   }
                 ]
               },
@@ -13741,7 +13273,7 @@ data:
               "targets": [
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_netstat_Tcp_InSegs{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_netstat_Tcp_InSegs{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "format": "time_series",
                   "instant": false,
                   "interval": "",
@@ -13751,7 +13283,7 @@ data:
                 },
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_netstat_Tcp_OutSegs{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_netstat_Tcp_OutSegs{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "format": "time_series",
                   "interval": "",
                   "legendFormat": "TCP Tx out",
@@ -13862,7 +13394,7 @@ data:
               "targets": [
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_netstat_Udp_InDatagrams{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_netstat_Udp_InDatagrams{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "format": "time_series",
                   "interval": "",
                   "legendFormat": "UDP Rx in",
@@ -13872,7 +13404,7 @@ data:
                 },
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_netstat_Udp_OutDatagrams{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_netstat_Udp_OutDatagrams{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "format": "time_series",
                   "interval": "",
                   "legendFormat": "UDP Tx out",
@@ -13987,7 +13519,7 @@ data:
               "targets": [
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_netstat_Icmp_InMsgs{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_netstat_Icmp_InMsgs{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "format": "time_series",
                   "interval": "",
                   "legendFormat": "ICMP Rx in",
@@ -13997,7 +13529,7 @@ data:
                 },
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_netstat_Icmp_OutMsgs{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_netstat_Icmp_OutMsgs{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "format": "time_series",
                   "interval": "",
                   "legendFormat": "ICMP Tx out",
@@ -14096,7 +13628,7 @@ data:
               "targets": [
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_netstat_TcpExt_ListenOverflows{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_netstat_TcpExt_ListenOverflows{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "format": "time_series",
                   "interval": "",
                   "legendFormat": "Listen Overflows",
@@ -14106,7 +13638,7 @@ data:
                 },
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_netstat_TcpExt_ListenDrops{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_netstat_TcpExt_ListenDrops{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "format": "time_series",
                   "interval": "",
                   "legendFormat": "Listen Drops",
@@ -14116,7 +13648,7 @@ data:
                 },
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_netstat_TcpExt_TCPSynRetrans{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_netstat_TcpExt_TCPSynRetrans{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "format": "time_series",
                   "interval": "",
                   "legendFormat": "SYN Retransmits",
@@ -14126,7 +13658,7 @@ data:
                 },
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_netstat_Tcp_RetransSegs{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_netstat_Tcp_RetransSegs{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "interval": "",
                   "legendFormat": "Segment Retransmits",
                   "range": true,
@@ -14134,7 +13666,7 @@ data:
                 },
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_netstat_Tcp_InErrs{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_netstat_Tcp_InErrs{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "interval": "",
                   "legendFormat": "Receive Errors",
                   "range": true,
@@ -14142,7 +13674,7 @@ data:
                 },
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_netstat_Tcp_OutRsts{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_netstat_Tcp_OutRsts{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "interval": "",
                   "legendFormat": "RST Sent",
                   "range": true,
@@ -14150,7 +13682,7 @@ data:
                 },
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_netstat_TcpExt_TCPRcvQDrop{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_netstat_TcpExt_TCPRcvQDrop{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "interval": "",
                   "legendFormat": "Receive Queue Drops",
                   "range": true,
@@ -14158,7 +13690,7 @@ data:
                 },
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_netstat_TcpExt_TCPOFOQueue{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_netstat_TcpExt_TCPOFOQueue{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "interval": "",
                   "legendFormat": "Out-of-order Queued",
                   "range": true,
@@ -14166,7 +13698,7 @@ data:
                 },
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_netstat_TcpExt_TCPTimeouts{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_netstat_TcpExt_TCPTimeouts{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "interval": "",
                   "legendFormat": "TCP Timeouts",
                   "range": true,
@@ -14266,7 +13798,7 @@ data:
               "targets": [
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_netstat_Udp_InErrors{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_netstat_Udp_InErrors{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "format": "time_series",
                   "interval": "",
                   "legendFormat": "UDP Rx in Errors",
@@ -14276,7 +13808,7 @@ data:
                 },
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_netstat_Udp_NoPorts{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_netstat_Udp_NoPorts{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "format": "time_series",
                   "interval": "",
                   "legendFormat": "UDP No Listener",
@@ -14286,7 +13818,7 @@ data:
                 },
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_netstat_UdpLite_InErrors{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_netstat_UdpLite_InErrors{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "interval": "",
                   "legendFormat": "UDPLite Rx in Errors",
                   "range": true,
@@ -14294,7 +13826,7 @@ data:
                 },
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_netstat_Udp_RcvbufErrors{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_netstat_Udp_RcvbufErrors{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "format": "time_series",
                   "interval": "",
                   "legendFormat": "UDP Rx in Buffer Errors",
@@ -14304,7 +13836,7 @@ data:
                 },
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_netstat_Udp_SndbufErrors{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_netstat_Udp_SndbufErrors{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "format": "time_series",
                   "interval": "",
                   "legendFormat": "UDP Tx out Buffer Errors",
@@ -14331,7 +13863,7 @@ data:
                     "axisBorderShow": false,
                     "axisCenteredZero": false,
                     "axisColorMode": "text",
-                    "axisLabel": "out (-) / in (+)",
+                    "axisLabel": "",
                     "axisPlacement": "auto",
                     "barAlignment": 0,
                     "barWidthFactor": 0.6,
@@ -14372,20 +13904,7 @@ data:
                   },
                   "unit": "pps"
                 },
-                "overrides": [
-                  {
-                    "matcher": {
-                      "id": "byRegexp",
-                      "options": "/.*out.*/"
-                    },
-                    "properties": [
-                      {
-                        "id": "custom.transform",
-                        "value": "negative-Y"
-                      }
-                    ]
-                  }
-                ]
+                "overrides": []
               },
               "gridPos": {
                 "h": 10,
@@ -14415,7 +13934,7 @@ data:
               "targets": [
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_netstat_Icmp_InErrors{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_netstat_Icmp_InErrors{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "format": "time_series",
                   "interval": "",
                   "legendFormat": "ICMP Rx In",
@@ -14529,7 +14048,7 @@ data:
               "targets": [
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_netstat_TcpExt_SyncookiesFailed{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_netstat_TcpExt_SyncookiesFailed{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "format": "time_series",
                   "interval": "",
                   "legendFormat": "SYN Cookies Failed",
@@ -14539,7 +14058,7 @@ data:
                 },
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_netstat_TcpExt_SyncookiesRecv{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_netstat_TcpExt_SyncookiesRecv{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "format": "time_series",
                   "interval": "",
                   "legendFormat": "SYN Cookies Validated",
@@ -14549,7 +14068,7 @@ data:
                 },
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_netstat_TcpExt_SyncookiesSent{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_netstat_TcpExt_SyncookiesSent{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "format": "time_series",
                   "interval": "",
                   "legendFormat": "SYN Cookies Sent",
@@ -14622,7 +14141,7 @@ data:
                   {
                     "matcher": {
                       "id": "byRegexp",
-                      "options": "/.*Max*./"
+                      "options": "/.*Max.*/"
                     },
                     "properties": [
                       {
@@ -14895,7 +14414,7 @@ data:
               "targets": [
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_netstat_Tcp_ActiveOpens{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_netstat_Tcp_ActiveOpens{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "format": "time_series",
                   "interval": "",
                   "legendFormat": "Active Opens",
@@ -14905,7 +14424,7 @@ data:
                 },
                 {
                   "editorMode": "code",
-                  "expr": "irate(node_netstat_Tcp_PassiveOpens{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(node_netstat_Tcp_PassiveOpens{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "format": "time_series",
                   "interval": "",
                   "legendFormat": "Passive Opens",
@@ -15054,7 +14573,258 @@ data:
                   "step": 240
                 }
               ],
-              "title": "TCP Stat",
+              "title": "TCP Stat Persistent",
+              "type": "timeseries"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${ds_prometheus}"
+              },
+              "description": "Transient TCP connection states. These are typically short-lived during connection establishment and teardown",
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "axisBorderShow": false,
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
+                    "axisLabel": "",
+                    "axisPlacement": "auto",
+                    "barAlignment": 0,
+                    "barWidthFactor": 0.6,
+                    "drawStyle": "line",
+                    "fillOpacity": 20,
+                    "gradientMode": "none",
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "insertNulls": false,
+                    "lineInterpolation": "linear",
+                    "lineWidth": 1,
+                    "pointSize": 5,
+                    "scaleDistribution": {
+                      "type": "linear"
+                    },
+                    "showPoints": "never",
+                    "spanNulls": false,
+                    "stacking": {
+                      "group": "A",
+                      "mode": "none"
+                    },
+                    "thresholdsStyle": {
+                      "mode": "off"
+                    }
+                  },
+                  "links": [],
+                  "mappings": [],
+                  "min": 0,
+                  "noValue": "0",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green"
+                      }
+                    ]
+                  },
+                  "unit": "short"
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 10,
+                "w": 12,
+                "x": 0,
+                "y": 243
+              },
+              "id": 341,
+              "options": {
+                "legend": {
+                  "calcs": [
+                    "min",
+                    "mean",
+                    "max"
+                  ],
+                  "displayMode": "table",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "hideZeros": false,
+                  "mode": "multi",
+                  "sort": "none"
+                }
+              },
+              "pluginVersion": "11.6.1",
+              "targets": [
+                {
+                  "editorMode": "code",
+                  "expr": "node_tcp_connection_states{state=\"syn_sent\",instance=\"$node\",job=\"$job\"}",
+                  "format": "time_series",
+                  "legendFormat": "SYN_SENT",
+                  "range": true,
+                  "refId": "A",
+                  "step": 240
+                },
+                {
+                  "editorMode": "code",
+                  "expr": "node_tcp_connection_states{state=\"syn_recv\",instance=\"$node\",job=\"$job\"}",
+                  "format": "time_series",
+                  "legendFormat": "SYN_RECV",
+                  "range": true,
+                  "refId": "B",
+                  "step": 240
+                },
+                {
+                  "editorMode": "code",
+                  "expr": "node_tcp_connection_states{state=\"fin_wait1\",instance=\"$node\",job=\"$job\"}",
+                  "format": "time_series",
+                  "legendFormat": "FIN_WAIT1",
+                  "range": true,
+                  "refId": "C",
+                  "step": 240
+                },
+                {
+                  "editorMode": "code",
+                  "expr": "node_tcp_connection_states{state=\"close\",instance=\"$node\",job=\"$job\"}",
+                  "format": "time_series",
+                  "legendFormat": "CLOSE",
+                  "range": true,
+                  "refId": "D",
+                  "step": 240
+                },
+                {
+                  "editorMode": "code",
+                  "expr": "node_tcp_connection_states{state=\"last_ack\",instance=\"$node\",job=\"$job\"}",
+                  "format": "time_series",
+                  "legendFormat": "LAST_ACK",
+                  "range": true,
+                  "refId": "E",
+                  "step": 240
+                },
+                {
+                  "editorMode": "code",
+                  "expr": "node_tcp_connection_states{state=\"closing\",instance=\"$node\",job=\"$job\"}",
+                  "format": "time_series",
+                  "legendFormat": "CLOSING",
+                  "range": true,
+                  "refId": "F",
+                  "step": 240
+                }
+              ],
+              "title": "TCP Stat Transient",
+              "type": "timeseries"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${ds_prometheus}"
+              },
+              "description": "TCP socket queue sizes. High rx_queued_bytes indicates application not reading fast enough. High tx_queued_bytes indicates network congestion or slow receiver",
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "axisBorderShow": false,
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
+                    "axisLabel": "",
+                    "axisPlacement": "auto",
+                    "barAlignment": 0,
+                    "barWidthFactor": 0.6,
+                    "drawStyle": "line",
+                    "fillOpacity": 20,
+                    "gradientMode": "none",
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "insertNulls": false,
+                    "lineInterpolation": "linear",
+                    "lineWidth": 1,
+                    "pointSize": 5,
+                    "scaleDistribution": {
+                      "type": "linear"
+                    },
+                    "showPoints": "never",
+                    "spanNulls": false,
+                    "stacking": {
+                      "group": "A",
+                      "mode": "none"
+                    },
+                    "thresholdsStyle": {
+                      "mode": "off"
+                    }
+                  },
+                  "links": [],
+                  "mappings": [],
+                  "min": 0,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green"
+                      }
+                    ]
+                  },
+                  "unit": "bytes"
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 10,
+                "w": 12,
+                "x": 12,
+                "y": 243
+              },
+              "id": 340,
+              "options": {
+                "legend": {
+                  "calcs": [
+                    "min",
+                    "mean",
+                    "max"
+                  ],
+                  "displayMode": "table",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "hideZeros": false,
+                  "mode": "multi",
+                  "sort": "none"
+                }
+              },
+              "pluginVersion": "11.6.1",
+              "targets": [
+                {
+                  "editorMode": "code",
+                  "expr": "node_tcp_connection_states{state=\"rx_queued_bytes\",instance=\"$node\",job=\"$job\"}",
+                  "format": "time_series",
+                  "legendFormat": "RX Queued (waiting to be read)",
+                  "range": true,
+                  "refId": "A",
+                  "step": 240
+                },
+                {
+                  "editorMode": "code",
+                  "expr": "node_tcp_connection_states{state=\"tx_queued_bytes\",instance=\"$node\",job=\"$job\"}",
+                  "format": "time_series",
+                  "legendFormat": "TX Queued (waiting to be sent)",
+                  "range": true,
+                  "refId": "B",
+                  "step": 240
+                }
+              ],
+              "title": "TCP Socket Queue",
               "type": "timeseries"
             }
           ],
@@ -15259,7 +15029,7 @@ data:
               "targets": [
                 {
                   "editorMode": "code",
-                  "expr": "irate(process_cpu_seconds_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
+                  "expr": "rate(process_cpu_seconds_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])",
                   "format": "time_series",
                   "interval": "",
                   "legendFormat": "Process CPU Usage",
@@ -15493,7 +15263,7 @@ data:
                   {
                     "matcher": {
                       "id": "byRegexp",
-                      "options": "/.*Max*./"
+                      "options": "/.*Max.*/"
                     },
                     "properties": [
                       {
@@ -15776,7 +15546,7 @@ data:
       "timezone": "browser",
       "title": "Node Exporter",
       "uid": "rYdddlPWk",
-      "version": 98,
+      "version": 101,
       "weekStart": "",
       "gnetId": 1860
     }
@@ -19371,7 +19141,7 @@ metadata:
     kubenuts/grafana: dashboard
     grafana_dashboard: "1"
 data:
-  15758-kubernetes-views-namespaces.rev44.json: |
+  15758-kubernetes-views-namespaces.rev46.json: |
     {
       "__inputs": [
         {
@@ -19915,7 +19685,7 @@ data:
                 "uid": "${datasource}"
               },
               "editorMode": "code",
-              "expr": "sum(kube_pod_container_resource_requests{namespace=~\"$namespace\", resource=\"cpu\", cluster=\"$cluster\"})",
+              "expr": "sum(kube_pod_container_resource_requests{namespace=~\"$namespace\", resource=\"cpu\", cluster=\"$cluster\"} and on(namespace, pod) max by (namespace, pod) (kube_pod_status_phase{phase=\"Running\", namespace=~\"$namespace\", cluster=\"$cluster\"} == 1))",
               "hide": false,
               "legendFormat": "Requests",
               "range": true,
@@ -19927,7 +19697,7 @@ data:
                 "uid": "${datasource}"
               },
               "editorMode": "code",
-              "expr": "sum(kube_pod_container_resource_limits{namespace=~\"$namespace\", resource=\"cpu\", cluster=\"$cluster\"})",
+              "expr": "sum(kube_pod_container_resource_limits{namespace=~\"$namespace\", resource=\"cpu\", cluster=\"$cluster\"} and on(namespace, pod) max by (namespace, pod) (kube_pod_status_phase{phase=\"Running\", namespace=~\"$namespace\", cluster=\"$cluster\"} == 1))",
               "hide": false,
               "legendFormat": "Limits",
               "range": true,
@@ -20017,7 +19787,7 @@ data:
                 "uid": "${datasource}"
               },
               "editorMode": "code",
-              "expr": "sum(kube_pod_container_resource_requests{namespace=~\"$namespace\", resource=\"memory\", cluster=\"$cluster\"})",
+              "expr": "sum(kube_pod_container_resource_requests{namespace=~\"$namespace\", resource=\"memory\", cluster=\"$cluster\"} and on(namespace, pod) max by (namespace, pod) (kube_pod_status_phase{phase=\"Running\", namespace=~\"$namespace\", cluster=\"$cluster\"} == 1))",
               "hide": false,
               "legendFormat": "Requests",
               "range": true,
@@ -20029,7 +19799,7 @@ data:
                 "uid": "${datasource}"
               },
               "editorMode": "code",
-              "expr": "sum(kube_pod_container_resource_limits{namespace=~\"$namespace\", resource=\"memory\", cluster=\"$cluster\"})",
+              "expr": "sum(kube_pod_container_resource_limits{namespace=~\"$namespace\", resource=\"memory\", cluster=\"$cluster\"} and on(namespace, pod) max by (namespace, pod) (kube_pod_status_phase{phase=\"Running\", namespace=~\"$namespace\", cluster=\"$cluster\"} == 1))",
               "hide": false,
               "legendFormat": "Limits",
               "range": true,
@@ -21777,7 +21547,7 @@ data:
                 "uid": "${datasource}"
               },
               "exemplar": true,
-              "expr": "1 - sum(kubelet_volume_stats_inodes_used{namespace=~\"$namespace\", cluster=\"$cluster\"}) by (persistentvolumeclaim) / sum(kubelet_volume_stats_inodes{namespace=~\"$namespace\", cluster=\"$cluster\"}) by (persistentvolumeclaim)",
+              "expr": "1 - (sum(kubelet_volume_stats_inodes_used{namespace=~\"$namespace\", cluster=\"$cluster\"}) by (persistentvolumeclaim) / sum(kubelet_volume_stats_inodes{namespace=~\"$namespace\", cluster=\"$cluster\"}) by (persistentvolumeclaim))",
               "interval": "",
               "legendFormat": "{{ persistentvolumeclaim }}",
               "refId": "A"
@@ -22404,7 +22174,7 @@ data:
       "timezone": "",
       "title": "Kubernetes Namespaces",
       "uid": "k8s_views_ns",
-      "version": 44,
+      "version": 46,
       "weekStart": "",
       "gnetId": 15758
     }
@@ -26457,7 +26227,7 @@ metadata:
     kubenuts/grafana: dashboard
     grafana_dashboard: "1"
 data:
-  15760-kubernetes-views-pods.rev37.json: |
+  15760-kubernetes-views-pods.rev39.json: |
     {
       "__inputs": [
         {
@@ -26571,14 +26341,9 @@ data:
       "fiscalYearStartMonth": 0,
       "graphTooltip": 1,
       "links": [],
-      "liveNow": false,
       "panels": [
         {
           "collapsed": false,
-          "datasource": {
-            "type": "datasource",
-            "uid": "grafana"
-          },
           "gridPos": {
             "h": 1,
             "w": 24,
@@ -26587,15 +26352,6 @@ data:
           },
           "id": 43,
           "panels": [],
-          "targets": [
-            {
-              "datasource": {
-                "type": "datasource",
-                "uid": "grafana"
-              },
-              "refId": "A"
-            }
-          ],
           "title": "Information",
           "type": "row"
         },
@@ -26613,7 +26369,7 @@ data:
                 "steps": [
                   {
                     "color": "rgb(255, 255, 255)",
-                    "value": null
+                    "value": 0
                   }
                 ]
               },
@@ -26645,7 +26401,7 @@ data:
             "textMode": "name",
             "wideLayout": true
           },
-          "pluginVersion": "11.2.0",
+          "pluginVersion": "12.2.1",
           "targets": [
             {
               "datasource": {
@@ -26654,7 +26410,7 @@ data:
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "kube_pod_info{namespace=\"$namespace\", pod=\"$pod\", cluster=\"$cluster\"}",
+              "expr": "kube_pod_info{namespace=\"$namespace\", pod=~\"$pod\", cluster=\"$cluster\"}",
               "instant": true,
               "interval": "",
               "legendFormat": "{{ created_by_kind }}: {{ created_by_name }}",
@@ -26684,7 +26440,7 @@ data:
                 "steps": [
                   {
                     "color": "rgb(255, 255, 255)",
-                    "value": null
+                    "value": 0
                   }
                 ]
               },
@@ -26716,7 +26472,7 @@ data:
             "textMode": "name",
             "wideLayout": true
           },
-          "pluginVersion": "11.2.0",
+          "pluginVersion": "12.2.1",
           "targets": [
             {
               "datasource": {
@@ -26725,7 +26481,7 @@ data:
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "kube_pod_info{namespace=\"$namespace\", pod=\"$pod\", cluster=\"$cluster\"}",
+              "expr": "kube_pod_info{namespace=\"$namespace\", pod=~\"$pod\", cluster=\"$cluster\"}",
               "instant": true,
               "interval": "",
               "legendFormat": "{{ node }}",
@@ -26749,7 +26505,7 @@ data:
                 "steps": [
                   {
                     "color": "rgb(255, 255, 255)",
-                    "value": null
+                    "value": 0
                   }
                 ]
               },
@@ -26781,7 +26537,7 @@ data:
             "textMode": "name",
             "wideLayout": true
           },
-          "pluginVersion": "11.2.0",
+          "pluginVersion": "12.2.1",
           "targets": [
             {
               "datasource": {
@@ -26790,7 +26546,7 @@ data:
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "kube_pod_info{namespace=\"$namespace\", pod=\"$pod\", cluster=\"$cluster\"}",
+              "expr": "kube_pod_info{namespace=\"$namespace\", pod=~\"$pod\", cluster=\"$cluster\"}",
               "instant": true,
               "interval": "",
               "legendFormat": "{{ pod_ip }}",
@@ -26814,7 +26570,7 @@ data:
                 "steps": [
                   {
                     "color": "rgb(255, 255, 255)",
-                    "value": null
+                    "value": 0
                   }
                 ]
               },
@@ -26846,7 +26602,7 @@ data:
             "textMode": "name",
             "wideLayout": true
           },
-          "pluginVersion": "11.2.0",
+          "pluginVersion": "12.2.1",
           "targets": [
             {
               "datasource": {
@@ -26855,7 +26611,7 @@ data:
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "kube_pod_info{namespace=\"$namespace\", pod=\"$pod\", priority_class!=\"\", cluster=\"$cluster\"}",
+              "expr": "kube_pod_info{namespace=\"$namespace\", pod=~\"$pod\", priority_class!=\"\", cluster=\"$cluster\"}",
               "format": "time_series",
               "instant": true,
               "interval": "",
@@ -26884,7 +26640,7 @@ data:
                 "steps": [
                   {
                     "color": "green",
-                    "value": null
+                    "value": 0
                   }
                 ]
               },
@@ -26945,7 +26701,7 @@ data:
             "textMode": "name",
             "wideLayout": true
           },
-          "pluginVersion": "11.2.0",
+          "pluginVersion": "12.2.1",
           "targets": [
             {
               "datasource": {
@@ -26954,7 +26710,7 @@ data:
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "kube_pod_status_qos_class{namespace=\"$namespace\", pod=\"$pod\", cluster=\"$cluster\"} > 0",
+              "expr": "kube_pod_status_qos_class{namespace=\"$namespace\", pod=~\"$pod\", cluster=\"$cluster\"} > 0",
               "instant": true,
               "interval": "",
               "legendFormat": "{{ qos_class }}",
@@ -26978,7 +26734,7 @@ data:
                 "steps": [
                   {
                     "color": "text",
-                    "value": null
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -27012,7 +26768,7 @@ data:
             "textMode": "name",
             "wideLayout": true
           },
-          "pluginVersion": "11.2.0",
+          "pluginVersion": "12.2.1",
           "targets": [
             {
               "datasource": {
@@ -27021,7 +26777,7 @@ data:
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "kube_pod_container_status_last_terminated_reason{namespace=\"$namespace\", pod=\"$pod\", cluster=\"$cluster\"}",
+              "expr": "kube_pod_container_status_last_terminated_reason{namespace=\"$namespace\", pod=~\"$pod\", cluster=\"$cluster\"}",
               "instant": true,
               "interval": "",
               "legendFormat": "{{ reason }}",
@@ -27045,7 +26801,7 @@ data:
                 "steps": [
                   {
                     "color": "text",
-                    "value": null
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -27083,7 +26839,7 @@ data:
             "textMode": "value",
             "wideLayout": true
           },
-          "pluginVersion": "11.2.0",
+          "pluginVersion": "12.2.1",
           "targets": [
             {
               "datasource": {
@@ -27092,7 +26848,7 @@ data:
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "kube_pod_container_status_last_terminated_exitcode{namespace=\"$namespace\", pod=\"$pod\", cluster=\"$cluster\"}",
+              "expr": "kube_pod_container_status_last_terminated_exitcode{namespace=\"$namespace\", pod=~\"$pod\", cluster=\"$cluster\"}",
               "instant": true,
               "interval": "",
               "legendFormat": "__auto",
@@ -27105,10 +26861,6 @@ data:
         },
         {
           "collapsed": false,
-          "datasource": {
-            "type": "datasource",
-            "uid": "grafana"
-          },
           "gridPos": {
             "h": 1,
             "w": 24,
@@ -27117,15 +26869,6 @@ data:
           },
           "id": 47,
           "panels": [],
-          "targets": [
-            {
-              "datasource": {
-                "type": "datasource",
-                "uid": "grafana"
-              },
-              "refId": "A"
-            }
-          ],
           "title": "Resources",
           "type": "row"
         },
@@ -27149,7 +26892,7 @@ data:
                 "steps": [
                   {
                     "color": "green",
-                    "value": null
+                    "value": 0
                   },
                   {
                     "color": "#EAB839",
@@ -27187,7 +26930,7 @@ data:
             "showThresholdMarkers": true,
             "sizing": "auto"
           },
-          "pluginVersion": "11.2.0",
+          "pluginVersion": "12.2.1",
           "targets": [
             {
               "datasource": {
@@ -27196,7 +26939,7 @@ data:
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "sum(rate(container_cpu_usage_seconds_total{namespace=\"$namespace\", pod=~\"$pod\", image!=\"\", cluster=\"$cluster\"}[$__rate_interval])) / sum(kube_pod_container_resource_requests{namespace=\"$namespace\", pod=~\"$pod\", resource=\"cpu\", job=~\"$job\", cluster=\"$cluster\"})",
+              "expr": "sum(rate(container_cpu_usage_seconds_total{namespace=\"$namespace\", pod=~\"$pod\", image!=\"\", cluster=\"$cluster\"}[$__rate_interval])) / sum(kube_pod_container_resource_requests{namespace=\"$namespace\", pod=~\"$pod\", resource=\"cpu\", job=~\"$job\", cluster=\"$cluster\"} and on(namespace, pod) max by (namespace, pod) (kube_pod_status_phase{phase=\"Running\", namespace=\"$namespace\", pod=~\"$pod\", job=~\"$job\", cluster=\"$cluster\"} == 1))",
               "instant": true,
               "interval": "$resolution",
               "legendFormat": "Requests",
@@ -27222,7 +26965,7 @@ data:
                 "steps": [
                   {
                     "color": "green",
-                    "value": null
+                    "value": 0
                   },
                   {
                     "color": "#EAB839",
@@ -27260,7 +27003,7 @@ data:
             "showThresholdMarkers": true,
             "sizing": "auto"
           },
-          "pluginVersion": "11.2.0",
+          "pluginVersion": "12.2.1",
           "targets": [
             {
               "datasource": {
@@ -27269,7 +27012,7 @@ data:
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "sum(rate(container_cpu_usage_seconds_total{namespace=\"$namespace\", pod=~\"$pod\", image!=\"\", cluster=\"$cluster\"}[$__rate_interval])) / sum(kube_pod_container_resource_limits{namespace=\"$namespace\", pod=~\"$pod\", resource=\"cpu\", job=~\"$job\", cluster=\"$cluster\"})",
+              "expr": "sum(rate(container_cpu_usage_seconds_total{namespace=\"$namespace\", pod=~\"$pod\", image!=\"\", cluster=\"$cluster\"}[$__rate_interval])) / sum(kube_pod_container_resource_limits{namespace=\"$namespace\", pod=~\"$pod\", resource=\"cpu\", job=~\"$job\", cluster=\"$cluster\"} and on(namespace, pod) max by (namespace, pod) (kube_pod_status_phase{phase=\"Running\", namespace=\"$namespace\", pod=~\"$pod\", job=~\"$job\", cluster=\"$cluster\"} == 1))",
               "instant": true,
               "interval": "$resolution",
               "legendFormat": "Limits",
@@ -27299,7 +27042,7 @@ data:
                 "steps": [
                   {
                     "color": "blue",
-                    "value": null
+                    "value": 0
                   },
                   {
                     "color": "#EAB839",
@@ -27337,7 +27080,7 @@ data:
             "showThresholdMarkers": true,
             "sizing": "auto"
           },
-          "pluginVersion": "11.2.0",
+          "pluginVersion": "12.2.1",
           "targets": [
             {
               "datasource": {
@@ -27346,7 +27089,7 @@ data:
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "sum(container_memory_working_set_bytes{namespace=\"$namespace\", pod=~\"$pod\", image!=\"\", cluster=\"$cluster\"}) / sum(kube_pod_container_resource_requests{namespace=\"$namespace\", pod=~\"$pod\", resource=\"memory\", job=~\"$job\", cluster=\"$cluster\"})",
+              "expr": "sum(container_memory_working_set_bytes{namespace=\"$namespace\", pod=~\"$pod\", image!=\"\", cluster=\"$cluster\"}) / sum(kube_pod_container_resource_requests{namespace=\"$namespace\", pod=~\"$pod\", resource=\"memory\", job=~\"$job\", cluster=\"$cluster\"} and on(namespace, pod) max by (namespace, pod) (kube_pod_status_phase{phase=\"Running\", namespace=\"$namespace\", pod=~\"$pod\", job=~\"$job\", cluster=\"$cluster\"} == 1))",
               "instant": true,
               "interval": "$resolution",
               "legendFormat": "Requests",
@@ -27372,7 +27115,7 @@ data:
                 "steps": [
                   {
                     "color": "green",
-                    "value": null
+                    "value": 0
                   },
                   {
                     "color": "#EAB839",
@@ -27410,7 +27153,7 @@ data:
             "showThresholdMarkers": true,
             "sizing": "auto"
           },
-          "pluginVersion": "11.2.0",
+          "pluginVersion": "12.2.1",
           "targets": [
             {
               "datasource": {
@@ -27419,7 +27162,7 @@ data:
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "sum(container_memory_working_set_bytes{namespace=\"$namespace\", pod=~\"$pod\", image!=\"\", cluster=\"$cluster\"}) / sum(kube_pod_container_resource_limits{namespace=\"$namespace\", pod=~\"$pod\", resource=\"memory\", job=~\"$job\", cluster=\"$cluster\"}) ",
+              "expr": "sum(container_memory_working_set_bytes{namespace=\"$namespace\", pod=~\"$pod\", image!=\"\", cluster=\"$cluster\"}) / sum(kube_pod_container_resource_limits{namespace=\"$namespace\", pod=~\"$pod\", resource=\"memory\", job=~\"$job\", cluster=\"$cluster\"} and on(namespace, pod) max by (namespace, pod) (kube_pod_status_phase{phase=\"Running\", namespace=\"$namespace\", pod=~\"$pod\", job=~\"$job\", cluster=\"$cluster\"} == 1)) ",
               "instant": true,
               "interval": "$resolution",
               "legendFormat": "Limits",
@@ -27442,6 +27185,9 @@ data:
                   "type": "auto"
                 },
                 "filterable": false,
+                "footer": {
+                  "reducers": []
+                },
                 "inspect": false,
                 "minWidth": 100
               },
@@ -27452,7 +27198,7 @@ data:
                 "steps": [
                   {
                     "color": "blue",
-                    "value": null
+                    "value": 0
                   }
                 ]
               },
@@ -27518,18 +27264,10 @@ data:
           "id": 38,
           "options": {
             "cellHeight": "sm",
-            "footer": {
-              "countRows": false,
-              "fields": "",
-              "reducer": [
-                "sum"
-              ],
-              "show": false
-            },
             "showHeader": true,
             "sortBy": []
           },
-          "pluginVersion": "11.2.0",
+          "pluginVersion": "12.2.1",
           "targets": [
             {
               "datasource": {
@@ -27538,7 +27276,7 @@ data:
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "sum(kube_pod_container_resource_requests{namespace=\"$namespace\", pod=~\"$pod\", resource=\"cpu\", job=~\"$job\", cluster=\"$cluster\"}) by (container)",
+              "expr": "sum(kube_pod_container_resource_requests{namespace=\"$namespace\", pod=~\"$pod\", resource=\"cpu\", job=~\"$job\", cluster=\"$cluster\"} and on(namespace, pod) max by (namespace, pod) (kube_pod_status_phase{phase=\"Running\", namespace=\"$namespace\", pod=~\"$pod\", job=~\"$job\", cluster=\"$cluster\"} == 1)) by (container)",
               "format": "table",
               "instant": true,
               "interval": "",
@@ -27553,7 +27291,7 @@ data:
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "sum(kube_pod_container_resource_limits{namespace=\"$namespace\", pod=~\"$pod\", resource=\"cpu\", job=~\"$job\", cluster=\"$cluster\"}) by (container)",
+              "expr": "sum(kube_pod_container_resource_limits{namespace=\"$namespace\", pod=~\"$pod\", resource=\"cpu\", job=~\"$job\", cluster=\"$cluster\"} and on(namespace, pod) max by (namespace, pod) (kube_pod_status_phase{phase=\"Running\", namespace=\"$namespace\", pod=~\"$pod\", job=~\"$job\", cluster=\"$cluster\"} == 1)) by (container)",
               "format": "table",
               "instant": true,
               "interval": "",
@@ -27568,7 +27306,7 @@ data:
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "sum(kube_pod_container_resource_requests{namespace=\"$namespace\", pod=~\"$pod\", resource=\"memory\", job=~\"$job\", cluster=\"$cluster\"}) by (container)",
+              "expr": "sum(kube_pod_container_resource_requests{namespace=\"$namespace\", pod=~\"$pod\", resource=\"memory\", job=~\"$job\", cluster=\"$cluster\"} and on(namespace, pod) max by (namespace, pod) (kube_pod_status_phase{phase=\"Running\", namespace=\"$namespace\", pod=~\"$pod\", job=~\"$job\", cluster=\"$cluster\"} == 1)) by (container)",
               "format": "table",
               "instant": true,
               "interval": "",
@@ -27582,7 +27320,7 @@ data:
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "sum(kube_pod_container_resource_limits{namespace=\"$namespace\", pod=~\"$pod\", resource=\"memory\", job=~\"$job\", cluster=\"$cluster\"}) by (container)",
+              "expr": "sum(kube_pod_container_resource_limits{namespace=\"$namespace\", pod=~\"$pod\", resource=\"memory\", job=~\"$job\", cluster=\"$cluster\"} and on(namespace, pod) max by (namespace, pod) (kube_pod_status_phase{phase=\"Running\", namespace=\"$namespace\", pod=~\"$pod\", job=~\"$job\", cluster=\"$cluster\"} == 1)) by (container)",
               "format": "table",
               "instant": true,
               "interval": "",
@@ -27745,6 +27483,7 @@ data:
                   "type": "linear"
                 },
                 "showPoints": "never",
+                "showValues": false,
                 "spanNulls": false,
                 "stacking": {
                   "group": "A",
@@ -27762,7 +27501,7 @@ data:
                 "steps": [
                   {
                     "color": "red",
-                    "value": null
+                    "value": 0
                   },
                   {
                     "color": "yellow",
@@ -27801,11 +27540,12 @@ data:
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "mode": "multi",
               "sort": "desc"
             }
           },
-          "pluginVersion": "8.3.3",
+          "pluginVersion": "12.2.1",
           "targets": [
             {
               "datasource": {
@@ -27814,7 +27554,7 @@ data:
               },
               "editorMode": "code",
               "exemplar": true,
-              "expr": "sum(rate(container_cpu_usage_seconds_total{namespace=\"$namespace\", pod=~\"$pod\", image!=\"\", cluster=\"$cluster\"}[$__rate_interval])) by (container) / sum(kube_pod_container_resource_requests{namespace=\"$namespace\", pod=~\"$pod\", resource=\"cpu\", job=~\"$job\", cluster=\"$cluster\"}) by (container)",
+              "expr": "sum(rate(container_cpu_usage_seconds_total{namespace=\"$namespace\", pod=~\"$pod\", image!=\"\", cluster=\"$cluster\"}[$__rate_interval])) by (container) / sum(kube_pod_container_resource_requests{namespace=\"$namespace\", pod=~\"$pod\", resource=\"cpu\", job=~\"$job\", cluster=\"$cluster\"} and on(namespace, pod) max by (namespace, pod) (kube_pod_status_phase{phase=\"Running\", namespace=\"$namespace\", pod=~\"$pod\", job=~\"$job\", cluster=\"$cluster\"} == 1)) by (container)",
               "interval": "$resolution",
               "legendFormat": "{{ container }}  REQUESTS",
               "range": true,
@@ -27826,7 +27566,7 @@ data:
                 "uid": "${datasource}"
               },
               "editorMode": "code",
-              "expr": "sum(rate(container_cpu_usage_seconds_total{namespace=\"$namespace\", pod=~\"$pod\", image!=\"\", cluster=\"$cluster\"}[$__rate_interval])) by (container) / sum(kube_pod_container_resource_limits{namespace=\"$namespace\", pod=~\"$pod\", resource=\"cpu\", job=~\"$job\", cluster=\"$cluster\"}) by (container)",
+              "expr": "sum(rate(container_cpu_usage_seconds_total{namespace=\"$namespace\", pod=~\"$pod\", image!=\"\", cluster=\"$cluster\"}[$__rate_interval])) by (container) / sum(kube_pod_container_resource_limits{namespace=\"$namespace\", pod=~\"$pod\", resource=\"cpu\", job=~\"$job\", cluster=\"$cluster\"} and on(namespace, pod) max by (namespace, pod) (kube_pod_status_phase{phase=\"Running\", namespace=\"$namespace\", pod=~\"$pod\", job=~\"$job\", cluster=\"$cluster\"} == 1)) by (container)",
               "hide": false,
               "legendFormat": "{{ container }}  LIMITS",
               "range": true,
@@ -27874,6 +27614,7 @@ data:
                   "type": "linear"
                 },
                 "showPoints": "never",
+                "showValues": false,
                 "spanNulls": false,
                 "stacking": {
                   "group": "A",
@@ -27891,7 +27632,7 @@ data:
                 "steps": [
                   {
                     "color": "red",
-                    "value": null
+                    "value": 0
                   },
                   {
                     "color": "yellow",
@@ -27930,11 +27671,12 @@ data:
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "mode": "multi",
               "sort": "desc"
             }
           },
-          "pluginVersion": "8.3.3",
+          "pluginVersion": "12.2.1",
           "targets": [
             {
               "datasource": {
@@ -27943,7 +27685,7 @@ data:
               },
               "editorMode": "code",
               "exemplar": true,
-              "expr": "sum(container_memory_working_set_bytes{namespace=\"$namespace\", pod=~\"$pod\", image!=\"\", cluster=\"$cluster\"}) by (container) / sum(kube_pod_container_resource_requests{namespace=\"$namespace\", pod=~\"$pod\", resource=\"memory\", job=~\"$job\", cluster=\"$cluster\"}) by (container)",
+              "expr": "sum(container_memory_working_set_bytes{namespace=\"$namespace\", pod=~\"$pod\", image!=\"\", cluster=\"$cluster\"}) by (container) / sum(kube_pod_container_resource_requests{namespace=\"$namespace\", pod=~\"$pod\", resource=\"memory\", job=~\"$job\", cluster=\"$cluster\"} and on(namespace, pod) max by (namespace, pod) (kube_pod_status_phase{phase=\"Running\", namespace=\"$namespace\", pod=~\"$pod\", job=~\"$job\", cluster=\"$cluster\"} == 1)) by (container)",
               "interval": "",
               "legendFormat": "{{ container }} REQUESTS",
               "range": true,
@@ -27955,7 +27697,7 @@ data:
                 "uid": "${datasource}"
               },
               "editorMode": "code",
-              "expr": "sum(container_memory_working_set_bytes{namespace=\"$namespace\", pod=~\"$pod\", image!=\"\", cluster=\"$cluster\"}) by (container) / sum(kube_pod_container_resource_limits{namespace=\"$namespace\", pod=~\"$pod\", resource=\"memory\", job=~\"$job\", cluster=\"$cluster\"}) by (container)",
+              "expr": "sum(container_memory_working_set_bytes{namespace=\"$namespace\", pod=~\"$pod\", image!=\"\", cluster=\"$cluster\"}) by (container) / sum(kube_pod_container_resource_limits{namespace=\"$namespace\", pod=~\"$pod\", resource=\"memory\", job=~\"$job\", cluster=\"$cluster\"} and on(namespace, pod) max by (namespace, pod) (kube_pod_status_phase{phase=\"Running\", namespace=\"$namespace\", pod=~\"$pod\", job=~\"$job\", cluster=\"$cluster\"} == 1)) by (container)",
               "hide": false,
               "legendFormat": "{{ container }} LIMITS",
               "range": true,
@@ -27999,6 +27741,7 @@ data:
                   "type": "linear"
                 },
                 "showPoints": "never",
+                "showValues": false,
                 "spanNulls": false,
                 "stacking": {
                   "group": "A",
@@ -28015,7 +27758,7 @@ data:
                 "steps": [
                   {
                     "color": "green",
-                    "value": null
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -28066,11 +27809,12 @@ data:
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "mode": "multi",
               "sort": "desc"
             }
           },
-          "pluginVersion": "8.3.3",
+          "pluginVersion": "12.2.1",
           "targets": [
             {
               "datasource": {
@@ -28126,6 +27870,7 @@ data:
                   "type": "linear"
                 },
                 "showPoints": "never",
+                "showValues": false,
                 "spanNulls": false,
                 "stacking": {
                   "group": "A",
@@ -28142,7 +27887,7 @@ data:
                 "steps": [
                   {
                     "color": "green",
-                    "value": null
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -28173,11 +27918,12 @@ data:
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "mode": "multi",
               "sort": "desc"
             }
           },
-          "pluginVersion": "8.3.3",
+          "pluginVersion": "12.2.1",
           "targets": [
             {
               "datasource": {
@@ -28234,6 +27980,7 @@ data:
                   "type": "linear"
                 },
                 "showPoints": "never",
+                "showValues": false,
                 "spanNulls": false,
                 "stacking": {
                   "group": "A",
@@ -28250,7 +27997,7 @@ data:
                 "steps": [
                   {
                     "color": "green",
-                    "value": null
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -28283,11 +28030,12 @@ data:
               "sortDesc": true
             },
             "tooltip": {
+              "hideZeros": false,
               "mode": "single",
               "sort": "none"
             }
           },
-          "pluginVersion": "8.3.3",
+          "pluginVersion": "12.2.1",
           "targets": [
             {
               "datasource": {
@@ -28357,13 +28105,14 @@ data:
                   "type": "linear"
                 },
                 "showPoints": "never",
+                "showValues": false,
                 "spanNulls": false,
                 "stacking": {
                   "group": "A",
                   "mode": "none"
                 },
                 "thresholdsStyle": {
-                  "mode": "area"
+                  "mode": "off"
                 }
               },
               "mappings": [],
@@ -28374,23 +28123,7 @@ data:
                 "steps": [
                   {
                     "color": "red",
-                    "value": null
-                  },
-                  {
-                    "color": "yellow",
-                    "value": 20
-                  },
-                  {
-                    "color": "green",
-                    "value": 30
-                  },
-                  {
-                    "color": "#EAB839",
-                    "value": 70
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
+                    "value": 0
                   }
                 ]
               },
@@ -28413,11 +28146,12 @@ data:
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "mode": "multi",
               "sort": "desc"
             }
           },
-          "pluginVersion": "8.3.3",
+          "pluginVersion": "12.2.1",
           "targets": [
             {
               "datasource": {
@@ -28426,7 +28160,7 @@ data:
               },
               "editorMode": "code",
               "exemplar": true,
-              "expr": "sum(increase(container_oom_events_total{namespace=\"${namespace}\", pod=~\"${pod}\", container!=\"\", cluster=\"$cluster\"}[$__rate_interval])) by (container)",
+              "expr": "sum(increase(container_oom_events_total{namespace=\"${namespace}\", pod=~\"${pod}\", container!=\"\", cluster=\"$cluster\"}[$__rate_interval])) by (container) > 0",
               "interval": "",
               "legendFormat": "{{ container }}",
               "range": true,
@@ -28474,13 +28208,14 @@ data:
                   "type": "linear"
                 },
                 "showPoints": "never",
+                "showValues": false,
                 "spanNulls": false,
                 "stacking": {
                   "group": "A",
                   "mode": "none"
                 },
                 "thresholdsStyle": {
-                  "mode": "area"
+                  "mode": "off"
                 }
               },
               "mappings": [],
@@ -28491,23 +28226,7 @@ data:
                 "steps": [
                   {
                     "color": "red",
-                    "value": null
-                  },
-                  {
-                    "color": "yellow",
-                    "value": 20
-                  },
-                  {
-                    "color": "green",
-                    "value": 30
-                  },
-                  {
-                    "color": "#EAB839",
-                    "value": 70
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
+                    "value": 0
                   }
                 ]
               },
@@ -28530,11 +28249,12 @@ data:
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "mode": "multi",
               "sort": "desc"
             }
           },
-          "pluginVersion": "8.3.3",
+          "pluginVersion": "12.2.1",
           "targets": [
             {
               "datasource": {
@@ -28543,7 +28263,7 @@ data:
               },
               "editorMode": "code",
               "exemplar": true,
-              "expr": "sum(increase(kube_pod_container_status_restarts_total{namespace=\"${namespace}\", pod=~\"${pod}\", container!=\"\", job=~\"$job\", cluster=\"$cluster\"}[$__rate_interval])) by (container)",
+              "expr": "sum(increase(kube_pod_container_status_restarts_total{namespace=\"${namespace}\", pod=~\"${pod}\", container!=\"\", job=~\"$job\", cluster=\"$cluster\"}[$__rate_interval])) by (container) > 0",
               "interval": "",
               "legendFormat": "{{ container }}",
               "range": true,
@@ -28566,11 +28286,14 @@ data:
               "custom": {
                 "align": "auto",
                 "cellOptions": {
-                  "type": "auto",
-                  "wrapText": false
+                  "type": "auto"
                 },
                 "filterable": true,
-                "inspect": false
+                "footer": {
+                  "reducers": []
+                },
+                "inspect": false,
+                "wrapText": false
               },
               "mappings": [],
               "thresholds": {
@@ -28578,7 +28301,7 @@ data:
                 "steps": [
                   {
                     "color": "green",
-                    "value": null
+                    "value": 0
                   },
                   {
                     "color": "#EAB839",
@@ -28642,17 +28365,9 @@ data:
           "id": 63,
           "options": {
             "cellHeight": "sm",
-            "footer": {
-              "countRows": false,
-              "fields": "",
-              "reducer": [
-                "sum"
-              ],
-              "show": false
-            },
             "showHeader": true
           },
-          "pluginVersion": "11.3.1",
+          "pluginVersion": "12.2.1",
           "targets": [
             {
               "datasource": {
@@ -28737,11 +28452,14 @@ data:
               "custom": {
                 "align": "auto",
                 "cellOptions": {
-                  "type": "auto",
-                  "wrapText": false
+                  "type": "auto"
                 },
                 "filterable": true,
-                "inspect": false
+                "footer": {
+                  "reducers": []
+                },
+                "inspect": false,
+                "wrapText": false
               },
               "mappings": [],
               "thresholds": {
@@ -28749,7 +28467,7 @@ data:
                 "steps": [
                   {
                     "color": "green",
-                    "value": null
+                    "value": 0
                   },
                   {
                     "color": "#EAB839",
@@ -28807,18 +28525,10 @@ data:
           "id": 64,
           "options": {
             "cellHeight": "sm",
-            "footer": {
-              "countRows": false,
-              "fields": "",
-              "reducer": [
-                "sum"
-              ],
-              "show": false
-            },
             "showHeader": true,
             "sortBy": []
           },
-          "pluginVersion": "11.3.1",
+          "pluginVersion": "12.2.1",
           "targets": [
             {
               "datasource": {
@@ -28886,10 +28596,6 @@ data:
         },
         {
           "collapsed": false,
-          "datasource": {
-            "type": "datasource",
-            "uid": "grafana"
-          },
           "gridPos": {
             "h": 1,
             "w": 24,
@@ -28898,15 +28604,6 @@ data:
           },
           "id": 45,
           "panels": [],
-          "targets": [
-            {
-              "datasource": {
-                "type": "datasource",
-                "uid": "grafana"
-              },
-              "refId": "A"
-            }
-          ],
           "title": "Network",
           "type": "row"
         },
@@ -28944,6 +28641,7 @@ data:
                   "type": "linear"
                 },
                 "showPoints": "never",
+                "showValues": false,
                 "spanNulls": false,
                 "stacking": {
                   "group": "A",
@@ -28959,7 +28657,7 @@ data:
                 "steps": [
                   {
                     "color": "green",
-                    "value": null
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -28986,11 +28684,12 @@ data:
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "mode": "multi",
               "sort": "none"
             }
           },
-          "pluginVersion": "8.3.3",
+          "pluginVersion": "12.2.1",
           "targets": [
             {
               "datasource": {
@@ -29052,6 +28751,7 @@ data:
                   "type": "linear"
                 },
                 "showPoints": "never",
+                "showValues": false,
                 "spanNulls": false,
                 "stacking": {
                   "group": "A",
@@ -29067,7 +28767,7 @@ data:
                 "steps": [
                   {
                     "color": "green",
-                    "value": null
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -29094,11 +28794,12 @@ data:
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "mode": "multi",
               "sort": "none"
             }
           },
-          "pluginVersion": "8.3.3",
+          "pluginVersion": "12.2.1",
           "targets": [
             {
               "datasource": {
@@ -29160,6 +28861,7 @@ data:
                   "type": "linear"
                 },
                 "showPoints": "never",
+                "showValues": false,
                 "spanNulls": false,
                 "stacking": {
                   "group": "A",
@@ -29175,7 +28877,7 @@ data:
                 "steps": [
                   {
                     "color": "green",
-                    "value": null
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -29202,11 +28904,12 @@ data:
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "mode": "multi",
               "sort": "none"
             }
           },
-          "pluginVersion": "8.3.3",
+          "pluginVersion": "12.2.1",
           "targets": [
             {
               "datasource": {
@@ -29268,6 +28971,7 @@ data:
                   "type": "linear"
                 },
                 "showPoints": "never",
+                "showValues": false,
                 "spanNulls": false,
                 "stacking": {
                   "group": "A",
@@ -29283,7 +28987,7 @@ data:
                 "steps": [
                   {
                     "color": "green",
-                    "value": null
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -29310,11 +29014,12 @@ data:
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "mode": "multi",
               "sort": "none"
             }
           },
-          "pluginVersion": "8.3.3",
+          "pluginVersion": "12.2.1",
           "targets": [
             {
               "datasource": {
@@ -29343,8 +29048,9 @@ data:
           "type": "timeseries"
         }
       ],
+      "preload": false,
       "refresh": "30s",
-      "schemaVersion": 39,
+      "schemaVersion": 42,
       "tags": [
         "Kubernetes",
         "Prometheus"
@@ -29357,23 +29063,17 @@ data:
               "text": "",
               "value": ""
             },
-            "hide": 0,
             "includeAll": false,
-            "multi": false,
             "name": "datasource",
             "options": [],
             "query": "prometheus",
-            "queryValue": "",
             "refresh": 1,
             "regex": "",
-            "skipUrlSync": false,
             "type": "datasource"
           },
           {
             "current": {
-              "isNone": true,
-              "selected": false,
-              "text": "None",
+              "text": "",
               "value": ""
             },
             "datasource": {
@@ -29381,9 +29081,7 @@ data:
               "uid": "${datasource}"
             },
             "definition": "label_values(kube_node_info,cluster)",
-            "hide": 0,
             "includeAll": false,
-            "multi": false,
             "name": "cluster",
             "options": [],
             "query": {
@@ -29393,7 +29091,6 @@ data:
             },
             "refresh": 1,
             "regex": "",
-            "skipUrlSync": false,
             "sort": 1,
             "type": "query"
           },
@@ -29408,9 +29105,7 @@ data:
               "uid": "${datasource}"
             },
             "definition": "label_values(kube_pod_info{cluster=\"$cluster\"}, namespace)",
-            "hide": 0,
             "includeAll": false,
-            "multi": false,
             "name": "namespace",
             "options": [],
             "query": {
@@ -29419,12 +29114,8 @@ data:
             },
             "refresh": 1,
             "regex": "",
-            "skipUrlSync": false,
             "sort": 1,
-            "tagValuesQuery": "",
-            "tagsQuery": "",
-            "type": "query",
-            "useTags": false
+            "type": "query"
           },
           {
             "allValue": ".*",
@@ -29438,7 +29129,6 @@ data:
               "uid": "${datasource}"
             },
             "definition": "label_values(kube_pod_info{namespace=\"$namespace\", cluster=\"$cluster\"}, pod)",
-            "hide": 0,
             "includeAll": true,
             "multi": true,
             "name": "pod",
@@ -29449,22 +29139,15 @@ data:
             },
             "refresh": 2,
             "regex": "",
-            "skipUrlSync": false,
             "sort": 1,
-            "tagValuesQuery": "",
-            "tagsQuery": "",
-            "type": "query",
-            "useTags": false
+            "type": "query"
           },
           {
             "current": {
-              "selected": false,
               "text": "30s",
               "value": "30s"
             },
-            "hide": 0,
             "includeAll": false,
-            "multi": false,
             "name": "resolution",
             "options": [
               {
@@ -29499,8 +29182,6 @@ data:
               }
             ],
             "query": "1s, 15s, 30s, 1m, 3m, 5m",
-            "queryValue": "",
-            "skipUrlSync": false,
             "type": "custom"
           },
           {
@@ -29514,7 +29195,6 @@ data:
               "uid": "${datasource}"
             },
             "definition": "label_values(kube_pod_info{namespace=\"$namespace\", cluster=\"$cluster\"},job)",
-            "hide": 0,
             "includeAll": false,
             "multi": true,
             "name": "job",
@@ -29526,7 +29206,6 @@ data:
             },
             "refresh": 1,
             "regex": "",
-            "skipUrlSync": false,
             "sort": 1,
             "type": "query"
           }
@@ -29540,7 +29219,7 @@ data:
       "timezone": "",
       "title": "Kubernetes Pods",
       "uid": "k8s_views_pods",
-      "version": 37,
+      "version": 39,
       "weekStart": "",
       "gnetId": 15760
     }
@@ -29558,7 +29237,7 @@ metadata:
     kubenuts/grafana: dashboard
     grafana_dashboard: "1"
 data:
-  15761-kubernetes-system-api-server.rev20.json: |
+  15761-kubernetes-system-api-server.rev21.json: |
     {
       "__inputs": [
         {
@@ -30361,7 +30040,7 @@ data:
                 "uid": "${datasource}"
               },
               "exemplar": true,
-              "expr": "sum by(instance) (rate(apiserver_request_total{code=~\"5..\", cluster=~\"$cluster\", job=~\"$job\"}[$__rate_interval]))\n / sum by(instance) (rate(apiserver_request_total{cluster=~\"$cluster\", job=~\"$job\"}[$__rate_interval]))",
+              "expr": "sum by(instance) (rate(apiserver_request_total{code=~\"5..\", cluster=~\"$cluster\", job=~\"$job\"}[$__rate_interval]))\n / (sum by(instance) (rate(apiserver_request_total{cluster=~\"$cluster\", job=~\"$job\"}[$__rate_interval])) > 0)",
               "interval": "$resolution",
               "legendFormat": "{{ instance }}",
               "refId": "A"
@@ -30455,7 +30134,7 @@ data:
                 "uid": "${datasource}"
               },
               "exemplar": true,
-              "expr": "sum by(verb) (rate(apiserver_request_total{code=~\"5..\", cluster=~\"$cluster\", job=~\"$job\"}[$__rate_interval]))\n / sum by(verb) (rate(apiserver_request_total{cluster=~\"$cluster\", job=~\"$job\"}[$__rate_interval]))",
+              "expr": "sum by(verb) (rate(apiserver_request_total{code=~\"5..\", cluster=~\"$cluster\", job=~\"$job\"}[$__rate_interval]))\n / (sum by(verb) (rate(apiserver_request_total{cluster=~\"$cluster\", job=~\"$job\"}[$__rate_interval])) > 0)",
               "interval": "$resolution",
               "legendFormat": "{{ verb }}",
               "refId": "A"
@@ -30643,7 +30322,7 @@ data:
                 "uid": "${datasource}"
               },
               "exemplar": true,
-              "expr": "sum(rate(workqueue_depth{cluster=~\"$cluster\", job=~\"$job\"}[$__rate_interval])) by (instance)",
+              "expr": "sum(workqueue_depth{cluster=~\"$cluster\", job=~\"$job\"}) by (instance)",
               "interval": "$resolution",
               "legendFormat": "{{ instance }}",
               "refId": "A"
@@ -30978,7 +30657,7 @@ data:
       "timezone": "",
       "title": "Kubernetes API Server",
       "uid": "k8s_system_apisrv",
-      "version": 20,
+      "version": 21,
       "weekStart": "",
       "gnetId": 15761
     }
