@@ -10,6 +10,13 @@ resource "aws_s3_bucket" "opencost-spot-feed" {
   bucket = "pg02-spot-feed"
 }
 
+resource "aws_s3_bucket_ownership_controls" "opencost-spot-feed" {
+  bucket = aws_s3_bucket.opencost-spot-feed.id
+  rule {
+    object_ownership = "BucketOwnerPreferred"
+  }
+}
+
 resource "aws_s3_bucket_policy" "opencost-spot-feed" {
   bucket = aws_s3_bucket.opencost-spot-feed.id
 
@@ -42,7 +49,7 @@ resource "aws_spot_datafeed_subscription" "opencost" {
   bucket = aws_s3_bucket.opencost-spot-feed.bucket
   prefix = "spot-feed"
 
-  depends_on = [aws_s3_bucket_policy.opencost-spot-feed]
+  depends_on = [aws_s3_bucket_ownership_controls.opencost-spot-feed, aws_s3_bucket_policy.opencost-spot-feed]
 }
 
 data "aws_iam_policy_document" "opencost-trust" {
