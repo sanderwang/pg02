@@ -6,7 +6,7 @@ metadata:
   namespace: "flux-system"
   name: "flux-metrics-dashboard-cluster-stats"
   annotations:
-    kubenuts/grafana-folder: Flux
+    kubenuts/grafana-folder: FluxCD
   labels:
     app.kubernetes.io/instance: "flux-metrics"
     app.kubernetes.io/name: "flux-metrics-dashboard-cluster-stats"
@@ -1287,6 +1287,24 @@ data:
             "list": [
                 {
                     "current": {
+                        "selected": false,
+                        "text": "Prometheus",
+                        "value": "Prometheus"
+                    },
+                    "hide": 0,
+                    "includeAll": false,
+                    "label": "Datasource",
+                    "multi": false,
+                    "name": "DS_PROMETHEUS",
+                    "options": [],
+                    "query": "prometheus",
+                    "refresh": 1,
+                    "regex": "",
+                    "skipUrlSync": false,
+                    "type": "datasource"
+                },
+                {
+                    "current": {
                         "selected": true,
                         "text": [
                             "All"
@@ -1318,24 +1336,6 @@ data:
                     "tagsQuery": "",
                     "type": "query",
                     "useTags": false
-                },
-                {
-                    "current": {
-                        "selected": false,
-                        "text": "Prometheus",
-                        "value": "Prometheus"
-                    },
-                    "hide": 0,
-                    "includeAll": false,
-                    "label": "Datasource",
-                    "multi": false,
-                    "name": "DS_PROMETHEUS",
-                    "options": [],
-                    "query": "prometheus",
-                    "refresh": 1,
-                    "regex": "",
-                    "skipUrlSync": false,
-                    "type": "datasource"
                 }
             ]
         },
@@ -1369,7 +1369,7 @@ metadata:
   namespace: "flux-system"
   name: "flux-metrics-dashboard-control-plan"
   annotations:
-    kubenuts/grafana-folder: Flux
+    kubenuts/grafana-folder: FluxCD
   labels:
     app.kubernetes.io/instance: "flux-metrics"
     app.kubernetes.io/name: "flux-metrics-dashboard-control-plan"
