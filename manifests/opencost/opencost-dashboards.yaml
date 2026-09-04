@@ -22,3 +22,7 @@ spec:
       kind: ConfigMap
       namespace: "telemetry"
       name: "opencost-dashboard-opencost-namespace"
+    - apiVersion: v1
+      kind: ConfigMap
+      namespace: "telemetry"
+      name: "opencost-dashboard-opencost-workload"

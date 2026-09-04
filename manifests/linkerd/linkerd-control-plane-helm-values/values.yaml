@@ -1,0 +1,25 @@
+---
+clusterDomain: cluster.local
+controllerReplicas: 1
+enablePodAntiAffinity: true
+enablePodDisruptionBudget: true
+highAvailability: false
+webhookFailurePolicy: Fail
+deploymentStrategy:
+  rollingUpdate:
+    maxUnavailable: 1
+    maxSurge: 25%
+identity:
+  issuer:
+    scheme: kubernetes.io/tls
+    issuanceLifetime: 24h0m0s
+proxyInit:
+  runAsRoot: true
+podMonitor:
+  enabled: false
+policyValidator:
+  externalSecret: true
+profileValidator:
+  externalSecret: true
+proxyInjector:
+  externalSecret: true

@@ -1,0 +1,64 @@
+# Linkerd service mesh.
+# Re: https://linkerd.io/
+metadata:
+  name: linkerd
+  version: "2.20.0"
+  namespace: linkerd
+
+# Properties that can be customized to suit your system needs.
+properties:
+  # Buoyant Enterprise for Linkerd (BEL) configuration.
+  enterpriseEdition:
+    # -- Set to true to run BEL. NOTE You may need to purchase licenses depending on the size of
+    # your organization and your specific use cases. If licenses are required, you will need to
+    # purchase and renew them yourself (KubeNutty is not responsible for the licenses). For more
+    # information:
+    #
+    # - [BEL Plans and Pricing](https://buoyant.io/pricing)
+    # - [BEL Overview](https://docs.buoyant.io/buoyant-enterprise-linkerd/latest/overview/)
+    #
+    # Default to false to run open source Linkerd (no license required)
+    enabled: false
+
+  # -- The number of replicas for each control plane pod
+  controllerReplicas: 1
+
+  proxy:
+    # -- Resources to provide to each proxy container
+    resources: {}
+      # requests:
+      #   cpu: 50m
+      #   memory: 100Mi
+      # limits:
+      #   cpu: 100m
+      #   memory: 200Mi
+
+  destination:
+    # -- Resources to provide to each destination container.
+    # See proxy.resources for sub-fields
+    resources: {}
+
+  heartbeat:
+    # -- Resources to provide to each heartbeat container.
+    # See proxy.resources for sub-fields
+    resources: {}
+
+  identity:
+    # -- Resources to provide to the identity controller.
+    # See proxy.resources for sub-fields
+    resources: {}
+
+  policyController:
+    # -- Resources to provide to the policy controller.
+    # See proxy.resources for sub-fields
+    resources: {}
+
+  proxyInjector:
+    # -- Resources to provide to the proxy injector.
+    # See proxy.resources for sub-fields
+    resources: {}
+
+  spValidator:
+    # -- Resources to provide to the SP validator.
+    # See proxy.resources for sub-fields
+    resources: {}

@@ -1,0 +1,12 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- linkerd-namespace.yaml
+- linkerd-certificates.yaml
+- linkerd-control-plane-helm-release.yaml
+- linkerd-control-plane-helm-values.yaml
+- linkerd-crds-helm-release.yaml
+- linkerd-helm-repository.yaml
+- linkerd-secret-store.yaml
+- linkerd-webhook-certificates.yaml

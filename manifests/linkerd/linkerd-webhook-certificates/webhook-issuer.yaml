@@ -1,0 +1,9 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  namespace: "linkerd"
+  name: "linkerd-webhook-issuer"
+spec:
+  ca:
+    secretName: "linkerd-webhook-issuer-cert"
