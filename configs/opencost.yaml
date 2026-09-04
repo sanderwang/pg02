@@ -44,6 +44,7 @@ properties:
     dashboards:
     - 22208-opencost-overview
     - 22252-opencost-namespace
+    - 25168-opencost-workload
 
   # Prometheus configuration.
   prometheus:
