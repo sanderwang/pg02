@@ -1,0 +1,25 @@
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMServiceScrape
+metadata:
+  namespace: "flux-system"
+  name: flux-controllers
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: "flux-metrics"
+  namespaceSelector:
+    matchNames:
+    - "flux-system"
+  endpoints:
+  - port: http-prom
+    honorLabels: true
+    interval: 30s
+    relabelConfigs:
+    - sourceLabels: [service]
+      regex: (.*)-metrics
+      replacement: $1
+      targetLabel: job
+    metricRelabelConfigs:
+    - action: labeldrop
+      regex: (container_id|image_id|uid)

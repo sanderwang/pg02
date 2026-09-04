@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: "flux-system"
+  name: helm-controller-metrics
+  labels:
+    app: helm-controller
+    app.kubernetes.io/component: "flux-metrics"
+spec:
+  selector:
+    app: helm-controller
+  ports:
+  - name: http-prom
+    port: 8080
+    targetPort: http-prom

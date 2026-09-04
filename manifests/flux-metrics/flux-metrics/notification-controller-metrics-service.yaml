@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: "flux-system"
+  name: notification-controller-metrics
+  labels:
+    app: notification-controller
+    app.kubernetes.io/component: "flux-metrics"
+spec:
+  selector:
+    app: notification-controller
+  ports:
+  - name: http-prom
+    port: 8080
+    targetPort: http-prom

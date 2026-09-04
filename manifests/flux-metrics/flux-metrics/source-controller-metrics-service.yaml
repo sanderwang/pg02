@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: "flux-system"
+  name: source-controller-metrics
+  labels:
+    app: source-controller
+    app.kubernetes.io/component: "flux-metrics"
+spec:
+  selector:
+    app: source-controller
+  ports:
+  - name: http-prom
+    port: 8080
+    targetPort: http-prom
