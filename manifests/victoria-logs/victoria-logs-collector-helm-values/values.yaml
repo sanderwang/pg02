@@ -1,0 +1,4 @@
+---
+fullnameOverride: "victoria-logs-collector"
+remoteWrite:
+  - url: http://victoria-logs-vmauth:8427

@@ -1,0 +1,23 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: "victoria-logs"
+  name: "victoria-logs-cluster-helm-release"
+spec:
+  dependsOn:
+  - namespace: "victoria-logs"
+    name: "victoria-logs-cluster-helm-values"
+  interval: 10m
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    namespace: flux-system
+    name: flux-system
+  path: "/manifests/victoria-logs/victoria-logs-cluster-helm-release"
+  targetNamespace: "victoria-logs"
+  healthChecks:
+  - apiVersion: helm.toolkit.fluxcd.io/v2
+    kind: HelmRelease
+    namespace: "victoria-logs"
+    name: "victoria-logs-cluster"

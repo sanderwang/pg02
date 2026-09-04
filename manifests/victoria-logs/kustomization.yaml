@@ -1,0 +1,10 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- victoria-logs-cluster-helm-release.yaml
+- victoria-logs-cluster-helm-values.yaml
+- victoria-logs-collector-helm-release.yaml
+- victoria-logs-collector-helm-values.yaml
+- victoria-logs-helm-repository.yaml
+- victoria-logs-namespace.yaml

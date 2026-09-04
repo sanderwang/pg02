@@ -1,0 +1,58 @@
+# Victoria Logs suite.
+# Re: https://victoriametrics.com/
+metadata:
+  name: victoria-logs
+  version: 1.52.0
+  namespace: victoria-logs
+
+# Properties that can be customized to suit your system needs.
+properties:
+  # vlinsert component configuration.
+  vlinsert:
+    # -- The number of vlinsert pods to run
+    replicas: 1
+
+    # -- Resources to provide to the vlinsert pod
+    resources: {}
+
+  # vlselect component configuration.
+  vlselect:
+    # -- The number of vlselect pods to run
+    replicas: 1
+
+    # -- Resources to provide to the vlselect pod
+    resources: {}
+
+  # vlstorage component configuration.
+  vlstorage:
+    # -- The number of vlstorage pods to run
+    replicas: 1
+
+    # -- Resources to provide to the vlstorage pod
+    resources: {}
+
+    # -- Data retention period. Possible units: h(ours), d(ays), w(eeks), y(ears)
+    retentionPeriod: 7d
+
+    # -- The amount of storage that the vlstorage container can use
+    storageSize: 20Gi
+
+    # -- Storage class to use for the vlstorage PersistentVolume. Leave empty to use the cluster
+    # default
+    storageClass: ""
+
+  # vmauth component configuration (routes log queries and inserts).
+  vmauth:
+    # -- The number of vmauth pods to run
+    replicas: 1
+
+    # -- Resources to provide to the vmauth pod
+    resources: {}
+
+  # victoria-logs-collector component configuration.
+  collector:
+    # -- Enable the log collector
+    enabled: true
+
+    # -- Resources to provide to the collector pod
+    resources: {}

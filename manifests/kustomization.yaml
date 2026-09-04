@@ -18,5 +18,6 @@ resources:
 - prometheus-crds
 - reflector
 - telemetry
+- victoria-logs
 - victoria-metrics
 - weave-gitops

@@ -1,0 +1,54 @@
+---
+vlinsert:
+  fullnameOverride: "victoria-logs-vlinsert"
+  podDisruptionBudget:
+    enabled: true
+    maxUnavailable: 1
+  replicaCount: 1
+  service:
+    clusterIP: None
+    type: ClusterIP
+vlselect:
+  fullnameOverride: "victoria-logs-vlselect"
+  podDisruptionBudget:
+    enabled: true
+    maxUnavailable: 1
+  replicaCount: 1
+  service:
+    clusterIP: None
+    type: ClusterIP
+vlstorage:
+  fullnameOverride: "victoria-logs-vlstorage"
+  podDisruptionBudget:
+    enabled: true
+    maxUnavailable: 1
+  replicaCount: 1
+  retentionMaxDiskUsagePercent: 95
+  retentionPeriod: 7d
+  persistentVolume:
+    name: storage
+    size: 20Gi
+vmauth:
+  enabled: true
+  fullnameOverride: "victoria-logs-vmauth"
+  config:
+    unauthorized_user:
+      url_map:
+        - src_paths: ["/select/.*"]
+          url_prefix: "http://victoria-logs-vlselect:9471"
+          discover_backend_ips: true
+        - src_paths: ["/insert/.*"]
+          url_prefix: "http://victoria-logs-vlinsert:9481"
+          discover_backend_ips: true
+  podDisruptionBudget:
+    enabled: true
+    maxUnavailable: 1
+  replicaCount: 1
+  route:
+    enabled: true
+    hostnames:
+    - "logs.pg02.narvar.qa"
+    parentRefs:
+    - name: kubenuts-internal
+      namespace: kubenuts
+      sectionName: https
