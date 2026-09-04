@@ -11,4 +11,5 @@ properties:
   # -- Flux dashboards to be provisioned by Grafana. To disable a dashboard, remove it from
   # the list or comment it out.
   dashboards:
+  - cluster-stats
   - control-plan
