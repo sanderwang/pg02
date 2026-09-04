@@ -1,0 +1,14 @@
+# Exposes Flux controller metrics to VictoriaMetrics by creating Services and a VMServiceScrape
+# for the helm-controller, kustomize-controller, notification-controller, and source-controller.
+# Re: https://fluxcd.io/flux/monitoring/metrics/
+metadata:
+  name: flux-metrics
+  version: 1.0.0
+  namespace: flux-system
+
+# Properties that can be customized to suit your system needs.
+properties:
+  # -- Flux dashboards to be provisioned by Grafana. To disable a dashboard, remove it from
+  # the list or comment it out.
+  dashboards:
+  - control-plan
