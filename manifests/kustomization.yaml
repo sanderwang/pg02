@@ -12,7 +12,6 @@ resources:
 - grafana
 - kube-state-metrics
 - kubenuts
-- linkerd
 - node-exporter
 - opencost
 - polaris
