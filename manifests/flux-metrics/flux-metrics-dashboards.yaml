@@ -17,4 +17,8 @@ spec:
   - apiVersion: v1
     kind: ConfigMap
     namespace: "flux-system"
+    name: "flux-metrics-dashboard-cluster-stats"
+  - apiVersion: v1
+    kind: ConfigMap
+    namespace: "flux-system"
     name: "flux-metrics-dashboard-control-plan"
