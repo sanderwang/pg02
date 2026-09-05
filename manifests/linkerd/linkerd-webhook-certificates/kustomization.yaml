@@ -1,0 +1,9 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- policy-validator-cert.yaml
+- proxy-injector-cert.yaml
+- sp-validator-cert.yaml
+- webhook-issuer-cert.yaml
+- webhook-issuer.yaml

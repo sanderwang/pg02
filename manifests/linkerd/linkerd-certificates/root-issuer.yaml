@@ -1,0 +1,9 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  namespace: "linkerd"
+  name: "linkerd-root-issuer"
+spec:
+  ca:
+    secretName: "linkerd-root-cert"
