@@ -15,6 +15,7 @@ identity:
     issuanceLifetime: 24h0m0s
 proxyInit:
   runAsRoot: true
+  skipSubnets: "127.0.0.0/8"
 podMonitor:
   enabled: false
 policyValidator:
