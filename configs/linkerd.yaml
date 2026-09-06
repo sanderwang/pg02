@@ -25,18 +25,16 @@ properties:
 
   proxy:
     # -- Resources to provide to each proxy container
-    resources: {}
-      # requests:
-      #   cpu: 50m
-      #   memory: 100Mi
-      # limits:
-      #   cpu: 100m
-      #   memory: 200Mi
+    resources:
+      requests:
+        cpu: 50m
 
   destination:
     # -- Resources to provide to each destination container.
     # See proxy.resources for sub-fields
-    resources: {}
+    resources:
+      requests:
+        cpu: 100m
 
   heartbeat:
     # -- Resources to provide to each heartbeat container.
@@ -46,19 +44,27 @@ properties:
   identity:
     # -- Resources to provide to the identity controller.
     # See proxy.resources for sub-fields
-    resources: {}
+    resources:
+      requests:
+        cpu: 100m
 
   policyController:
     # -- Resources to provide to the policy controller.
     # See proxy.resources for sub-fields
-    resources: {}
+    resources:
+      requests:
+        cpu: 50m
 
   proxyInjector:
     # -- Resources to provide to the proxy injector.
     # See proxy.resources for sub-fields
-    resources: {}
+    resources:
+      requests:
+        cpu: 100m
 
   spValidator:
     # -- Resources to provide to the SP validator.
     # See proxy.resources for sub-fields
-    resources: {}
+    resources:
+      requests:
+        cpu: 50m
