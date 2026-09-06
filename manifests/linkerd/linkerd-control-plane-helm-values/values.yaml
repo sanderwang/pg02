@@ -24,23 +24,23 @@ profileValidator:
   externalSecret: true
 proxyInjector:
   externalSecret: true
-policyController:
+proxy:
   resources:    
     cpu:
       request: "50m"
-proxy:
+policyController:
   resources:    
     cpu:
       request: "50m"
 destinationResources:  
   cpu:
     request: "100m"
+spValidatorResources:  
+  cpu:
+    request: "50m"
 identityResources:  
   cpu:
     request: "100m"
 proxyInjectorResources:  
   cpu:
     request: "100m"
-spValidatorResources:  
-  cpu:
-    request: "50m"
