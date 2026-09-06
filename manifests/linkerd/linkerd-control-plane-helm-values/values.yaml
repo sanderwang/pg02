@@ -34,13 +34,13 @@ policyController:
       request: "50m"
 destinationResources:  
   cpu:
-    request: "100m"
+    request: "50m"
 spValidatorResources:  
   cpu:
     request: "50m"
 identityResources:  
   cpu:
-    request: "100m"
+    request: "50m"
 proxyInjectorResources:  
   cpu:
-    request: "100m"
+    request: "50m"
