@@ -8,6 +8,7 @@ opencost:
   customPricing:
     enabled: true
     createConfigmap: true
+    configPath: /var/configs
     costModel:
       awsSpotDataBucket: "472882997329-pg02-spot-feed"
       awsSpotDataPrefix: "spot-feed"
