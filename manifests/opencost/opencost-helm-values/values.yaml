@@ -8,13 +8,17 @@ opencost:
   customPricing:
     enabled: true
     createConfigmap: true
-    configPath: /var/configs
     costModel:
       awsSpotDataBucket: "472882997329-pg02-spot-feed"
       awsSpotDataPrefix: "spot-feed"
       awsSpotDataRegion: "us-west-2"
       projectID: "472882997329"
   exporter:
+    extraVolumeMounts:
+    - name: cloud-integration
+      mountPath: /tmp/custom-config/cloud-integration.json
+      subPath: cloud-integration.json
+      readOnly: true
     defaultClusterId: "eks-playground"
     extraArgs:
     - log-format=json
