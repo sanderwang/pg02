@@ -1,0 +1,72 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: "linkerd-viz"
+  name: "linkerd-viz-dashboards"
+spec:
+  interval: 10m
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    namespace: flux-system
+    name: flux-system
+  path: "/manifests/linkerd-viz/linkerd-viz-dashboards"
+  targetNamespace: "linkerd-viz"
+  healthChecks:
+    - apiVersion: v1
+      kind: ConfigMap
+      namespace: "linkerd-viz"
+      name: "linkerd-viz-dashboard-linkerd-top-line"
+    - apiVersion: v1
+      kind: ConfigMap
+      namespace: "linkerd-viz"
+      name: "linkerd-viz-dashboard-linkerd-deployment"
+    - apiVersion: v1
+      kind: ConfigMap
+      namespace: "linkerd-viz"
+      name: "linkerd-viz-dashboard-linkerd-pod"
+    - apiVersion: v1
+      kind: ConfigMap
+      namespace: "linkerd-viz"
+      name: "linkerd-viz-dashboard-linkerd-namespace"
+    - apiVersion: v1
+      kind: ConfigMap
+      namespace: "linkerd-viz"
+      name: "linkerd-viz-dashboard-linkerd-service"
+    - apiVersion: v1
+      kind: ConfigMap
+      namespace: "linkerd-viz"
+      name: "linkerd-viz-dashboard-linkerd-route"
+    - apiVersion: v1
+      kind: ConfigMap
+      namespace: "linkerd-viz"
+      name: "linkerd-viz-dashboard-linkerd-authority"
+    - apiVersion: v1
+      kind: ConfigMap
+      namespace: "linkerd-viz"
+      name: "linkerd-viz-dashboard-linkerd-cronjob"
+    - apiVersion: v1
+      kind: ConfigMap
+      namespace: "linkerd-viz"
+      name: "linkerd-viz-dashboard-linkerd-daemonset"
+    - apiVersion: v1
+      kind: ConfigMap
+      namespace: "linkerd-viz"
+      name: "linkerd-viz-dashboard-linkerd-health"
+    - apiVersion: v1
+      kind: ConfigMap
+      namespace: "linkerd-viz"
+      name: "linkerd-viz-dashboard-linkerd-job"
+    - apiVersion: v1
+      kind: ConfigMap
+      namespace: "linkerd-viz"
+      name: "linkerd-viz-dashboard-linkerd-replicaset"
+    - apiVersion: v1
+      kind: ConfigMap
+      namespace: "linkerd-viz"
+      name: "linkerd-viz-dashboard-linkerd-replicationcontroller"
+    - apiVersion: v1
+      kind: ConfigMap
+      namespace: "linkerd-viz"
+      name: "linkerd-viz-dashboard-linkerd-statefulset"

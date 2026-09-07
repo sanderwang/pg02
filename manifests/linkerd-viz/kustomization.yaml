@@ -1,0 +1,12 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- linkerd-viz-dashboards.yaml
+- linkerd-viz-helm-release.yaml
+- linkerd-viz-helm-repository.yaml
+- linkerd-viz-helm-values.yaml
+- linkerd-viz-http-routes.yaml
+- linkerd-viz-namespace.yaml
+- linkerd-viz-scrape-configs.yaml
+- linkerd-viz-webhook-certificates.yaml

@@ -1,0 +1,21 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  namespace: "linkerd-viz"
+  name: "linkerd-viz-tap"
+spec:
+  secretName: tap-k8s-tls
+  duration: 2160h
+  renewBefore: 240h
+  issuerRef:
+    kind: Issuer
+    name: "linkerd-viz-webhook-issuer"
+  commonName: "tap.linkerd-viz.svc"
+  dnsNames:
+  - "tap.linkerd-viz.svc"
+  privateKey:
+    algorithm: ECDSA
+  isCA: false
+  usages:
+  - server auth

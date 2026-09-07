@@ -1,0 +1,9 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  namespace: "linkerd-viz"
+  name: "linkerd-viz"
+spec:
+  interval: 3h
+  url: https://helm.linkerd.io/edge

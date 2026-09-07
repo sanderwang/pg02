@@ -1,0 +1,27 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: "linkerd-viz"
+  name: "linkerd-viz-helm-release"
+spec:
+  dependsOn:
+  - namespace: linkerd
+    name: linkerd-control-plane-helm-release
+  - namespace: "linkerd-viz"
+    name: "linkerd-viz-helm-values"
+  - namespace: "linkerd-viz"
+    name: "linkerd-viz-webhook-certificates"
+  interval: 10m
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    namespace: flux-system
+    name: flux-system
+  path: "/manifests/linkerd-viz/linkerd-viz-helm-release"
+  targetNamespace: "linkerd-viz"
+  healthChecks:
+  - apiVersion: helm.toolkit.fluxcd.io/v2
+    kind: HelmRelease
+    namespace: "linkerd-viz"
+    name: "linkerd-viz"

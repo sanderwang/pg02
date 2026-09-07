@@ -1,0 +1,43 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: "linkerd-viz"
+  name: "linkerd-viz-webhook-certificates"
+spec:
+  dependsOn:
+  - namespace: cert-manager
+    name: cert-manager-helm-release
+  - namespace: linkerd
+    name: linkerd-webhook-certificates
+  - namespace: kubenuts
+    name: reflector-helm-release
+  interval: 10m
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    namespace: flux-system
+    name: flux-system
+  path: "/manifests/linkerd-viz/linkerd-viz-webhook-certificates"
+  targetNamespace: "linkerd-viz"
+  healthChecks:
+  - apiVersion: cert-manager.io/v1
+    kind: Issuer
+    namespace: "linkerd-viz"
+    name: "linkerd-viz-webhook-issuer"
+  - apiVersion: cert-manager.io/v1
+    kind: Certificate
+    namespace: "linkerd-viz"
+    name: "linkerd-viz-tap-injector"
+  - apiVersion: v1
+    kind: Secret
+    namespace: "linkerd-viz"
+    name: tap-injector-k8s-tls
+  - apiVersion: cert-manager.io/v1
+    kind: Certificate
+    namespace: "linkerd-viz"
+    name: "linkerd-viz-tap"
+  - apiVersion: v1
+    kind: Secret
+    namespace: "linkerd-viz"
+    name: tap-k8s-tls

@@ -13,6 +13,7 @@ resources:
 - kube-state-metrics
 - kubenuts
 - linkerd
+- linkerd-viz
 - node-exporter
 - opencost
 - polaris

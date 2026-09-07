@@ -1,0 +1,26 @@
+---
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  namespace: "linkerd-viz"
+  name: linkerd-controller
+spec:
+  jobName: linkerd-controller
+  scrapeInterval: 10s
+  kubernetesSDConfigs:
+  - namespaces:
+      names:
+      - linkerd
+      - "linkerd-viz"
+    role: Pod
+  relabelings:
+  - action: keep
+    regex: admin
+    sourceLabels: 
+    - __meta_kubernetes_pod_container_port_name
+  - action: replace
+    sourceLabels:
+    - __meta_kubernetes_pod_container_name
+    targetLabel: component
+  - replacement: linkerd-controller
+    targetLabel: job

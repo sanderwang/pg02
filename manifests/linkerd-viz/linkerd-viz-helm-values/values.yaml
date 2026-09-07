@@ -1,0 +1,20 @@
+---
+dashboard:
+  enforcedHostRegexp: .*
+  replicas: 1
+defaultLogFormat: json
+defaultLogLevel: warn
+grafana:
+  externalUrl: https://monitoring.pg02.narvar.qa
+  url: ''
+metricsAPI:
+  replicas: 1
+prometheus:
+  enabled: false
+prometheusUrl: "http://vmauth-victoria-metrics.victoria-metrics:8427/select/0/prometheus"
+tap:
+  externalSecret: true
+  replicas: 1
+tapInjector:
+  externalSecret: true
+  replicas: 1

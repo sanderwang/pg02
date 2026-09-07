@@ -1,0 +1,84 @@
+# Linkerd dashboards.
+# Re: https://linkerd.io/2.19/features/dashboard/
+metadata:
+  name: linkerd-viz
+  version: "2.20.0"
+  namespace: linkerd-viz
+
+# Properties that can be customized to suit your system needs.
+properties:
+  # Web dashboard configuration.
+  dashboard:
+    # -- The number of dashboard pods to run
+    replicas: 1
+
+    # -- Resources to provide to dashboard pod
+    resources: {}
+      # requests:
+      #   cpu: 50m
+      #   memory: 100Mi
+      # limits:
+      #   cpu: 100m
+      #   memory: 200Mi
+
+  # Metrics API configuration.
+  metricsAPI:
+    # -- The number of metrics API pods to run
+    replicas: 1
+
+    # -- Resources to provide to metrics API pod.
+    # See dashboard.resources for sub-fields
+    resources: {}
+
+  # Tap configuration.
+  tap:
+    # -- The number of tap pods to run
+    replicas: 1
+
+    # -- Resources to provide to tap pod.
+    # See dashboard.resources for sub-fields
+    resources: {}
+
+  # Tap injector configuration.
+  tapInjector:
+    # -- The number of tap injector pods to run
+    replicas: 1
+
+    # -- Resources to provide to tap injector pod.
+    # See dashboard.resources for sub-fields
+    resources: {}
+
+  # Grafana configuration.
+  grafana:
+    # -- URL of an external Grafana instance. If empty, the KubeNutty-managed Grafana instance is
+    # used.
+    externalUrl: ''
+
+    # -- Dashboards to be provisioned by Grafana. To disable a dashboard, remove it from the list
+    # or comment it out. Details for each dashboard can be found at:
+    # https://grafana.com/grafana/dashboards/$id
+    dashboards:
+      - 15474-linkerd-top-line
+      - 15475-linkerd-deployment
+      - 15477-linkerd-pod
+      - 15478-linkerd-namespace
+      - 15480-linkerd-service
+      - 15481-linkerd-route
+      - 15482-linkerd-authority
+      - 15483-linkerd-cronjob
+      - 15484-linkerd-daemonset
+      - 15486-linkerd-health
+      - 15487-linkerd-job
+      - 15491-linkerd-replicaset
+      - 15492-linkerd-replicationcontroller
+      - 15493-linkerd-statefulset
+
+  # Prometheus configuration. Linkerd's viz extension components depend on the Prometheus instance
+  # to power the dashboard and CLI.
+  prometheus:
+    # -- URL of an external Prometheus instance. If empty, the KubeNutty-managed Victoria Metrics
+    # instance is used. When using a different external Prometheus, it must be configured to scrape
+    # Linkerd metrics. See [Bringing your own Prometheus](
+    # https://linkerd.io/2.19/tasks/external-prometheus/
+    # )
+    externalUrl: ''

@@ -1,0 +1,8 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: "linkerd-viz"
+  labels:
+    app.kubernetes.io/managed-by: kubenuts
+    linkerd.io/extension: viz
