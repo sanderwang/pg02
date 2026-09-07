@@ -18,7 +18,7 @@ properties:
     # - [BEL Overview](https://docs.buoyant.io/buoyant-enterprise-linkerd/latest/overview/)
     #
     # Default to false to run open source Linkerd (no license required)
-    enabled: true
+    enabled: false
 
   # -- The number of replicas for each control plane pod
   controllerReplicas: 1
