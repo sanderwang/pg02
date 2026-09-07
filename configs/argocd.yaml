@@ -135,6 +135,13 @@ properties:
     # See applicationSet.resources for sub-fields
     resources: {}
 
+  # Redis HA configuration (used when not running locally).
+  redisHA:
+    haproxy:
+      resources:
+        requests:
+          cpu: 50m
+
   # Server configuration.
   server:
     # -- Specify the minimum number of server pods
