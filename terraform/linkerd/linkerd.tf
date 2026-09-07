@@ -108,3 +108,7 @@ resource "aws_secretsmanager_secret_version" "linkerd-webhook-issuer-cert" {
     "key.pem"  = tls_private_key.linkerd-cert-keys["webhook-issuer"].private_key_pem
   })
 }
+
+resource "aws_secretsmanager_secret" "linkerd-license" {
+  name = "pg02/linkerd/license"
+}
