@@ -49,6 +49,10 @@ redis-ha:
   enabled: true
   podDisruptionBudget:
     maxUnavailable: 1
+  haproxy:
+    resources:
+      requests:
+        cpu: 50m
 repoServer:
   replicas: 1
   metrics:
