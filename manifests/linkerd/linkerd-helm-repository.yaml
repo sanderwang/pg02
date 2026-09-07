@@ -6,4 +6,4 @@ metadata:
   name: "linkerd"
 spec:
   interval: 3h
-  url: https://helm.buoyant.cloud
+  url: https://helm.linkerd.io/edge

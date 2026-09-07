@@ -10,4 +10,3 @@ resources:
 - linkerd-helm-repository.yaml
 - linkerd-secret-store.yaml
 - linkerd-webhook-certificates.yaml
-- linkerd-license.yaml

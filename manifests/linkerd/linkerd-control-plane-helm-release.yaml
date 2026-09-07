@@ -14,8 +14,6 @@ spec:
     name: "linkerd-webhook-certificates"
   - namespace: "linkerd"
     name: "linkerd-control-plane-helm-values"
-  - namespace: "linkerd"
-    name: "linkerd-license"
   interval: 10m
   prune: true
   sourceRef:
