@@ -1,0 +1,68 @@
+# Atlantis is a self-hosted Terraform pull request automation tool.
+# Re: https://www.runatlantis.io
+metadata:
+  name: atlantis
+  version: "6.16.0"
+  namespace: kubenuts
+
+# Properties that can be customized to suit your system needs.
+properties:
+  # -- List of repositories Atlantis is allowed to operate on.
+  # Defaults to '*' (all repos). Restrict this in production to limit blast radius.
+  repoAllowlist:
+  # - github.com/myorg/*
+  # - github.com/myorg/myrepo
+  - '*'
+
+  # GitHub PAT authentication. Use this or githubApp, not both.
+  # The PAT itself is loaded from the secret manager.
+  # Reference: [GitHub user](
+  # https://www.runatlantis.io/docs/access-credentials.html#github-user
+  # )
+  github:
+    # -- GitHub username of the bot account that owns the PAT
+    user: ''
+    # -- GitHub Enterprise hostname (e.g. github.your-org.com). Leave empty for github.com.
+    hostname: ''
+
+  # GitHub App authentication. Recommended over github PAT. Use this or github, not both.
+  # The GitHub App private key is loaded from the secret manager.
+  # Reference: [GitHub app](
+  # https://www.runatlantis.io/docs/access-credentials.html#github-app
+  # )
+  githubApp:
+    # -- GitHub App ID
+    appID: ''
+    # -- GitHub App Installation ID
+    installationID: ''
+    # -- GitHub App slug (short name of the app, e.g. my-atlantis)
+    appSlug: ''
+
+  # -- Resources to provide to the Atlantis pod
+  resources: {}
+    # requests:
+    #   cpu: 500m
+    #   memory: 1Gi
+    # limits:
+    #   memory: 2Gi
+
+  # -- Storage size for the Atlantis data volume (used to check out repositories)
+  storageSize: 8Gi
+
+  # -- Terraform distribution to use for plans and applies. Accepts 'terraform' or 'opentofu'
+  tfDistribution: terraform
+
+  # Terragrunt configuration.
+  terragrunt:
+    # -- Enable Terragrunt
+    enabled: false
+
+  # AWS-specific configuration.
+  aws:
+    # -- List of IAM role ARNs that Atlantis can assume to run terraform.
+    assumeRoles: []
+
+  # Google-specific configuration.
+  google:
+    # -- List of service account emails that Atlantis can impersonate to run terraform.
+    impersonateServiceAccounts: []

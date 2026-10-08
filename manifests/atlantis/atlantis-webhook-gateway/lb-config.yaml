@@ -1,0 +1,15 @@
+---
+apiVersion: gateway.k8s.aws/v1beta1
+kind: LoadBalancerConfiguration
+metadata:
+  namespace: "kubenuts"
+  name: "atlantis-webhook"
+spec:
+  scheme: internet-facing
+  listenerAttributes:
+  - key: ssl-policy
+    value: ELBSecurityPolicy-TLS13-1-2-2021-06
+  tags:
+    kubenuts/stack: "pg02"
+    kubenuts/namespace: "kubenuts"
+    kubenuts/gateway: "atlantis-webhook"

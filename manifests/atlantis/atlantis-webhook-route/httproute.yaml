@@ -1,0 +1,21 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  namespace: "kubenuts"
+  name: "atlantis-webhook"
+spec:
+  parentRefs:
+  - namespace: "kubenuts"
+    name: "atlantis-webhook"
+    sectionName: https
+  hostnames:
+  - "atlantis-webhook.pg02.narvar.qa"
+  rules:
+  - backendRefs:
+    - name: "atlantis-webhook"
+      port: 80
+    matches:
+    - path:
+        type: PathPrefix
+        value: /events

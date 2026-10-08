@@ -1,0 +1,56 @@
+---
+atlantisUrl: "https://atlantis.pg02.narvar.qa"
+defaultTFDistribution: "terraform"
+enableDiffMarkdownFormat: true
+environment:
+  ATLANTIS_WRITE_GIT_CREDS: "true"
+  TF_PLUGIN_CACHE_MAY_BREAK_DEPENDENCY_LOCK_FILE: "true"
+hidePrevPlanComments: true
+hideUnchangedPlanComments: true
+ingress:
+  enabled: false
+initConfig:
+  enabled: false
+logLevel: info
+orgAllowlist: "*"
+replicaCount: 1
+repoConfig: |
+  ---
+  repos:
+  - id: /.*/
+    plan_requirements: [undiverged]
+    apply_requirements: [approved, mergeable, undiverged]
+    delete_source_branch_on_merge: true
+    repo_config_file: atlantis.yaml
+    workflow: default
+    allow_custom_workflows: true
+    allowed_overrides: [workflow]
+  workflows:
+    default:
+      plan:
+        steps: [init, plan]
+      apply:
+        steps: [apply]
+route:
+  main:
+    enabled: true
+    hostnames:
+    - "atlantis.pg02.narvar.qa"
+    parentRefs:
+    - namespace: kubenuts
+      name: kubenuts-internal
+      sectionName: https
+service:
+  type: ClusterIP
+serviceAccount:
+  create: true
+  annotations:
+    eks.amazonaws.com/role-arn: "arn:aws:iam::472882997329:role/pg02-atlantis"
+terminationGracePeriodSeconds: 120
+test:
+  enabled: false
+volumeClaim:
+  enabled: true
+  dataStorage: "8Gi"
+webhook_ingress:
+  enabled: false

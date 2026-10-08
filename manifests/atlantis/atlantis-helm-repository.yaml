@@ -1,0 +1,9 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  namespace: "kubenuts"
+  name: "atlantis"
+spec:
+  interval: 3h
+  url: https://runatlantis.github.io/helm-charts
