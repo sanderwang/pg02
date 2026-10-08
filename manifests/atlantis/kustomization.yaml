@@ -5,5 +5,6 @@ resources:
 - atlantis-helm-release.yaml
 - atlantis-helm-repository.yaml
 - atlantis-helm-values.yaml
+- atlantis-secrets.yaml
 - atlantis-webhook-gateway.yaml
 - atlantis-webhook-route.yaml

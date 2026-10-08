@@ -21,7 +21,7 @@ properties:
   # )
   github:
     # -- GitHub username of the bot account that owns the PAT
-    user: ''
+    user: 'buvms'
     # -- GitHub Enterprise hostname (e.g. github.your-org.com). Leave empty for github.com.
     hostname: ''
 
@@ -63,6 +63,6 @@ properties:
     assumeRoles: []
 
   # Google-specific configuration.
-  google:
+  gcp:
     # -- List of service account emails that Atlantis can impersonate to run terraform.
     impersonateServiceAccounts: []

@@ -8,7 +8,7 @@ metadata:
 # Properties that can be customized to suit your system needs.
 properties:
   # Google related configurations (only used when the cluster is on GCP).
-  google:
+  gcp:
     # -- ID of the Google project that owns the target DNS zone(s). If not specified, it defaults
     # to the same Google project that owns the GKE cluster
     project: ''

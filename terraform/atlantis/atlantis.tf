@@ -35,12 +35,85 @@ resource "aws_iam_role" "atlantis" {
   assume_role_policy = data.aws_iam_policy_document.atlantis-trust.json
 }
 
+resource "aws_secretsmanager_secret" "atlantis-github" {
+  name                    = "pg02/kubenuts/atlantis"
+  recovery_window_in_days = 0
+}
+
+resource "aws_secretsmanager_secret_version" "atlantis-github" {
+  secret_id     = aws_secretsmanager_secret.atlantis-github.id
+  secret_string = jsonencode({
+    github-token          = "CHANGE_ME"
+    github-webhook-secret = "CHANGE_ME"
+  })
+
+  lifecycle {
+    ignore_changes = [secret_string]
+  }
+}
+
+resource "aws_wafv2_ip_set" "atlantis-webhook-github-ipv4" {
+  name               = "pg02-atlantis-webhook-github-ipv4"
+  scope              = "REGIONAL"
+  ip_address_version = "IPV4"
+
+  addresses = [
+    # https://api.github.com/meta
+    "192.30.252.0/22",
+    "185.199.108.0/22",
+    "140.82.112.0/20",
+    "143.55.64.0/20",
+  ]
+}
+
+resource "aws_wafv2_ip_set" "atlantis-webhook-github-ipv6" {
+  name               = "pg02-atlantis-webhook-github-ipv6"
+  scope              = "REGIONAL"
+  ip_address_version = "IPV6"
+
+  addresses = [
+    # https://api.github.com/meta
+    "2a0a:a440::/29",
+    "2606:50c0::/32",
+  ]
+}
+
 resource "aws_wafv2_web_acl" "atlantis-webhook" {
   name  = "pg02-atlantis-webhook"
   scope = "REGIONAL"
 
   default_action {
     block {}
+  }
+
+  rule {
+    name     = "allow-github"
+    priority = 1
+
+    action {
+      allow {}
+    }
+
+    statement {
+      or_statement {
+        statement {
+          ip_set_reference_statement {
+            arn = aws_wafv2_ip_set.atlantis-webhook-github-ipv4.arn
+          }
+        }
+        statement {
+          ip_set_reference_statement {
+            arn = aws_wafv2_ip_set.atlantis-webhook-github-ipv6.arn
+          }
+        }
+      }
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = false
+      metric_name                = "pg02-atlantis-webhook-allow"
+      sampled_requests_enabled   = false
+    }
   }
 
   visibility_config {

@@ -8,6 +8,8 @@ spec:
   dependsOn:
   - namespace: "kubenuts"
     name: "atlantis-helm-values"
+  - namespace: "kubenuts"
+    name: "atlantis-secrets"
   interval: 10m
   prune: true
   sourceRef:
