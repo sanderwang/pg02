@@ -7,9 +7,8 @@ metadata:
 spec:
   scheme: internet-facing
   listenerConfigurations:
-  - listenerAttributes:
-    - key: ssl-policy
-      value: ELBSecurityPolicy-TLS13-1-2-2021-06
+  - protocolPort: HTTPS:443
+    sslPolicy: ELBSecurityPolicy-TLS13-1-2-2021-06
   tags:
     kubenuts/stack: "pg02"
     kubenuts/namespace: "kubenuts"
