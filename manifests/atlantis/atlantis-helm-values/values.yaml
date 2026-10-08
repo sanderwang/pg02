@@ -5,7 +5,6 @@ enableDiffMarkdownFormat: true
 environment:
   ATLANTIS_GH_TOKEN: PLACEHOLDER
   ATLANTIS_GH_USER: PLACEHOLDER
-  ATLANTIS_WRITE_GIT_CREDS: "true"
   TF_PLUGIN_CACHE_MAY_BREAK_DEPENDENCY_LOCK_FILE: "true"
 hidePrevPlanComments: true
 hideUnchangedPlanComments: true
