@@ -32,11 +32,11 @@ properties:
   # )
   githubApp:
     # -- GitHub App ID
-    appID: ''
+    appID: '5331643'
     # -- GitHub App Installation ID
-    installationID: ''
+    installationID: '171744217'
     # -- GitHub App slug (short name of the app, e.g. my-atlantis)
-    appSlug: ''
+    appSlug: 'sw-atlantis'
 
   # -- Resources to provide to the Atlantis pod
   resources: {}
