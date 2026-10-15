@@ -65,8 +65,4 @@ resource "aws_secretsmanager_secret_version" "argocd-secret" {
     admin-password-mtime = "CHANGE_ME"
     server-secret-key    = "CHANGE_ME"
   })
-
-  lifecycle {
-    ignore_changes = [secret_string]
-  }
 }

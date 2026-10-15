@@ -3,9 +3,11 @@ atlantisUrl: "https://atlantis.pg02.narvar.qa"
 defaultTFDistribution: "terraform"
 enableDiffMarkdownFormat: true
 environment:
-  ATLANTIS_GH_USER: "buvms"
+  ATLANTIS_GH_APP_ID: "5331643"
+  ATLANTIS_GH_APP_INSTALLATION_ID: "171744217"
+  ATLANTIS_GH_APP_SLUG: "sw-atlantis"
+  ATLANTIS_WRITE_GIT_CREDS: "true"
   TF_PLUGIN_CACHE_MAY_BREAK_DEPENDENCY_LOCK_FILE: "true"
-gitconfigSecretName: "atlantis-gitconfig"
 loadEnvFromSecrets:
 - atlantis-github
 hidePrevPlanComments: true

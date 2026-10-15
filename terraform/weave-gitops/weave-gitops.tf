@@ -10,8 +10,4 @@ resource "aws_secretsmanager_secret_version" "weave-gitops" {
     admin-username      = "CHANGE_ME"
     admin-password-hash = "CHANGE_ME"
   })
-
-  lifecycle {
-    ignore_changes = [secret_string]
-  }
 }
