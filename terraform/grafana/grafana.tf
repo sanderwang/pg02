@@ -9,8 +9,4 @@ resource "aws_secretsmanager_secret_version" "grafana" {
     admin-user     = "CHANGE_ME"
     admin-password = "CHANGE_ME"
   })
-
-  lifecycle {
-    ignore_changes = [secret_string]
-  }
 }

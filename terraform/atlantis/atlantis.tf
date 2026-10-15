@@ -46,10 +46,6 @@ resource "aws_secretsmanager_secret_version" "atlantis-github" {
     github-app-key        = "CHANGE_ME"
     github-webhook-secret = "CHANGE_ME"
   })
-
-  lifecycle {
-    ignore_changes = [secret_string]
-  }
 }
 
 resource "aws_wafv2_ip_set" "atlantis-webhook-github-ipv4" {
