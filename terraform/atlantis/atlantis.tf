@@ -40,8 +40,13 @@ resource "aws_secretsmanager_secret" "atlantis-github" {
   recovery_window_in_days = 0
 }
 
+resource "aws_secretsmanager_secret" "atlantis-bala" {
+  name                    = "pg02/kubenuts/atlantis-bala"
+  recovery_window_in_days = 0
+}
+
 resource "aws_secretsmanager_secret_version" "atlantis-github" {
-  secret_id     = aws_secretsmanager_secret.atlantis-github.id
+  secret_id = aws_secretsmanager_secret.atlantis-github.id
   secret_string = jsonencode({
     github-app-key        = "CHANGE_ME"
     github-webhook-secret = "CHANGE_ME"
