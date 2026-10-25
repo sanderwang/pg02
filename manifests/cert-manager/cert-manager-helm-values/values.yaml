@@ -11,4 +11,4 @@ serviceAccount:
   create: true
   name: "cert-manager"
   annotations:
-    eks.amazonaws.com/role-arn: "arn:aws:iam::472882997329:role/pg02-cert-manager"
+    eks.amazonaws.com/role-arn: "arn:aws:iam::472882997329:role/kubenuts/pg02/pg02-cert-manager"

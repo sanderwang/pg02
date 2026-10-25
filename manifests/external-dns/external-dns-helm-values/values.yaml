@@ -16,7 +16,7 @@ serviceAccount:
   create: true
   name: "external-dns"
   annotations:
-    eks.amazonaws.com/role-arn: "arn:aws:iam::472882997329:role/pg02-external-dns"
+    eks.amazonaws.com/role-arn: "arn:aws:iam::472882997329:role/kubenuts/pg02/pg02-external-dns"
 sources:
 - gateway-httproute
 - ingress

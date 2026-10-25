@@ -66,6 +66,7 @@ data "aws_iam_policy_document" "cert-manager-access" {
 
 resource "aws_iam_role" "cert-manager" {
   name               = "pg02-cert-manager"
+  path               = "/kubenuts/pg02/"
   assume_role_policy = data.aws_iam_policy_document.cert-manager-trust.json
 }
 

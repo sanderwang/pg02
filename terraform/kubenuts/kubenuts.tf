@@ -40,6 +40,7 @@ data "aws_iam_policy_document" "kubenuts-secret-store-access" {
 
 resource "aws_iam_role" "kubenuts-secret-store" {
   name               = "pg02-eso-kubenuts"
+  path               = "/kubenuts/pg02/"
   assume_role_policy = data.aws_iam_policy_document.kubenuts-secret-store-trust.json
 }
 

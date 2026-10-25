@@ -40,6 +40,7 @@ data "aws_iam_policy_document" "argocd-secret-store-access" {
 
 resource "aws_iam_role" "argocd-secret-store" {
   name               = "pg02-eso-argocd"
+  path               = "/kubenuts/pg02/"
   assume_role_policy = data.aws_iam_policy_document.argocd-secret-store-trust.json
 }
 

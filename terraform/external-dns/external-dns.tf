@@ -55,6 +55,7 @@ data "aws_iam_policy_document" "external-dns-access" {
 
 resource "aws_iam_role" "external-dns" {
   name               = "pg02-external-dns"
+  path               = "/kubenuts/pg02/"
   assume_role_policy = data.aws_iam_policy_document.external-dns-trust.json
 }
 

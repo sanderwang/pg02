@@ -105,6 +105,7 @@ resource "aws_glue_catalog_database" "opencost-cur" {
 
 resource "aws_iam_role" "opencost-glue" {
   name = "pg02-opencost-glue"
+  path = "/kubenuts/pg02/"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -268,6 +269,7 @@ data "aws_iam_policy_document" "opencost-access" {
 
 resource "aws_iam_role" "opencost" {
   name               = "pg02-opencost"
+  path               = "/kubenuts/pg02/"
   assume_role_policy = data.aws_iam_policy_document.opencost-trust.json
 }
 

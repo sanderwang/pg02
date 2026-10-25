@@ -40,6 +40,7 @@ data "aws_iam_policy_document" "telemetry-secret-store-access" {
 
 resource "aws_iam_role" "telemetry-secret-store" {
   name               = "pg02-eso-telemetry"
+  path               = "/kubenuts/pg02/"
   assume_role_policy = data.aws_iam_policy_document.telemetry-secret-store-trust.json
 }
 

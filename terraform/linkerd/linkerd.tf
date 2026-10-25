@@ -76,6 +76,7 @@ data "aws_iam_policy_document" "linkerd-secret-store-access" {
 
 resource "aws_iam_role" "linkerd-secret-store" {
   name               = "pg02-eso-linkerd"
+  path               = "/kubenuts/pg02/"
   assume_role_policy = data.aws_iam_policy_document.linkerd-secret-store-trust.json
 }
 

@@ -32,6 +32,7 @@ data "aws_iam_policy_document" "atlantis-trust" {
 
 resource "aws_iam_role" "atlantis" {
   name               = "pg02-atlantis"
+  path               = "/kubenuts/pg02/"
   assume_role_policy = data.aws_iam_policy_document.atlantis-trust.json
 }
 

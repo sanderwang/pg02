@@ -40,6 +40,7 @@ data "aws_iam_policy_document" "victoria-metrics-secret-store-access" {
 
 resource "aws_iam_role" "victoria-metrics-secret-store" {
   name               = "pg02-eso-victoria-metrics"
+  path               = "/kubenuts/pg02/"
   assume_role_policy = data.aws_iam_policy_document.victoria-metrics-secret-store-trust.json
 }
 
