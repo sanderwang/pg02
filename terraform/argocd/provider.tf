@@ -6,6 +6,9 @@ terraform {
   }
 
   backend "s3" {
+    assume_role = {
+      role_arn = "arn:aws:iam::472882997329:role/kubenuts/pg02/pg02-kubenuts-tf"
+    }
     region       = "us-west-2"
     bucket       = "tf-playground-ny2mimvtuwdotjwg9ne4yg"
     key          = "kubenutty/argocd/terraform.tfstate"
@@ -14,6 +17,9 @@ terraform {
 }
 
 provider "aws" {
+  assume_role {
+    role_arn = "arn:aws:iam::472882997329:role/kubenuts/pg02/pg02-kubenuts-tf"
+  }
   allowed_account_ids = ["472882997329"]
   region              = "us-west-2"
 }

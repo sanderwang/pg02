@@ -1,0 +1,31 @@
+# Provisions the terraform runner (IAM role on AWS, service account on GCP) and state bucket used
+# by all other components. Skip if you supply both externally. When used, apply it before other
+# components' terraform using active cloud credentials.
+metadata:
+  name: bootstrap
+  version: "1.0.0"
+
+# Properties that can be customized to suit your system needs.
+properties:
+  # -- Kubernetes namespace for storing the component's terraform state. Must pre-exist if
+  # overridden
+  stateNamespace: default
+
+  # AWS-specific configuration.
+  aws:
+    # -- Additional IAM principals allowed to assume the terraform runner role. KubeNutty-managed
+    # runners in the same stack (e.g. Atlantis) are trusted automatically via IAM tag convention.
+    # Use this for external or cross-account principals only
+    extraTrustedPrincipals:
+    - arn:aws:iam::472882997329:user/sander.wang@narvar.com
+
+    # -- Additional IAM policy ARNs to attach to the terraform runner role, beyond the defaults
+    extraPolicies: []
+    # - arn:aws:iam::aws:policy/AdministratorAccess
+
+  # GCP-specific configuration.
+  gcp:
+    # -- Additional IAM roles to grant to the terraform runner service account, beyond the defaults
+    extraRoles: []
+    # - roles/bigquery.admin
+    # - roles/container.admin
