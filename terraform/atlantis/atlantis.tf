@@ -60,6 +60,9 @@ resource "aws_wafv2_ip_set" "atlantis-webhook-github-ipv4" {
 
   addresses = [
     # https://api.github.com/meta
+    "9.234.106.48/28",
+    "9.234.98.160/28",
+    "9.234.98.176/28",
     "192.30.252.0/22",
     "185.199.108.0/22",
     "140.82.112.0/20",

@@ -5,6 +5,9 @@ metadata:
   namespace: "linkerd-viz"
   name: "linkerd-viz-scrape-configs"
 spec:
+  dependsOn:
+  - namespace: telemetry
+    name: prometheus-crds-helm-release
   interval: 10m
   sourceRef:
     kind: GitRepository
