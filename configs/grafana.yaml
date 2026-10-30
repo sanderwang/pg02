@@ -2,7 +2,7 @@
 # Re: https://grafana.com/oss/
 metadata:
   name: grafana
-  version: "13.0.1"
+  version: "14.2.0"
   namespace: telemetry
 
 # Properties that can be customized to suit your system needs.

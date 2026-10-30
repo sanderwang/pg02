@@ -14,6 +14,11 @@ terraform {
 }
 
 provider "aws" {
+  default_tags {
+    tags = {
+      ManagedBy = "kubenuts"
+    }
+  }
   allowed_account_ids = ["472882997329"]
   region              = "us-west-2"
 }

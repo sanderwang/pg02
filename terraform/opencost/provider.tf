@@ -20,6 +20,11 @@ provider "aws" {
   assume_role {
     role_arn = "arn:aws:iam::472882997329:role/kubenuts/pg02/pg02-kubenuts-tf"
   }
+  default_tags {
+    tags = {
+      ManagedBy = "kubenuts"
+    }
+  }
   allowed_account_ids = ["472882997329"]
   region              = "us-west-2"
 }
@@ -27,6 +32,11 @@ provider "aws" {
 provider "aws" {
   assume_role {
     role_arn = "arn:aws:iam::472882997329:role/kubenuts/pg02/pg02-kubenuts-tf"
+  }
+  default_tags {
+    tags = {
+      ManagedBy = "kubenuts"
+    }
   }
   alias               = "billing"
   allowed_account_ids = ["472882997329"]
