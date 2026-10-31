@@ -6,8 +6,8 @@ metadata:
   name: "linkerd-viz-tap"
 spec:
   secretName: tap-k8s-tls
-  duration: 2160h
-  renewBefore: 240h
+  duration: 720h
+  renewBeforePercentage: 33
   issuerRef:
     kind: Issuer
     name: "linkerd-viz-webhook-issuer"

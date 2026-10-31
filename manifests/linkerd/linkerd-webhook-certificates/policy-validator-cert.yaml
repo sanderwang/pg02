@@ -6,8 +6,8 @@ metadata:
   name: "linkerd-policy-validator"
 spec:
   secretName: "linkerd-policy-validator-k8s-tls"
-  duration: 1440h
-  renewBefore: 240h
+  duration: 720h
+  renewBeforePercentage: 33
   issuerRef:
     kind: Issuer
     name: "linkerd-webhook-issuer"
