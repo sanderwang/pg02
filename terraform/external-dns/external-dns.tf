@@ -43,7 +43,7 @@ data "aws_iam_policy_document" "external-dns-access" {
   }
 
   statement {
-    effect  = "Allow"
+    effect = "Allow"
     actions = [
       "route53:ListHostedZones",
       "route53:ListResourceRecordSets",
@@ -64,3 +64,8 @@ resource "aws_iam_role_policy" "external-dns-access" {
   role   = aws_iam_role.external-dns.id
   policy = data.aws_iam_policy_document.external-dns-access.json
 }
+
+# resource "aws_secretsmanager_secret" "my-sec" {
+#   name                    = "pg02/kubenuts/my-bala"
+#   recovery_window_in_days = 0
+# }
