@@ -1,4 +1,5 @@
-# DO NOT EDIT.
+# Weave GitOps is a web UI for Flux that provides visibility into the health and sync status of
+# GitOps resources and cluster workloads.
 metadata:
   name: weave-gitops
   version: "4.0.36"
@@ -6,14 +7,17 @@ metadata:
 
 # Properties that can be customized to suit your system needs.
 properties:
-  # The number of server pods to run
+  # -- The number of server pods to run
   replicas: 1
 
-  # Resources to provide to the server pod
-  resources: {}
-    # requests:
-    #   cpu: 50m
-    #   memory: 100Mi
-    # limits:
-    #   cpu: 100m
-    #   memory: 200Mi
+  # -- Resources to provide to the server pod.
+  #
+  # resources:
+  #   requests:
+  #     cpu: 50m
+  #     memory: 100Mi
+  #   limits:
+  #     cpu: 100m
+  #     memory: 200Mi
+  resources:
+    {}

@@ -13,10 +13,13 @@ properties:
     replicas: 1
 
     # -- Resources to provide to the dashboard pod
-    resources: {}
-      # requests:
-      #   cpu: 50m
-      #   memory: 100Mi
-      # limits:
-      #   cpu: 100m
-      #   memory: 200Mi
+    #
+    # resources:
+    #   requests:
+    #     cpu: 50m
+    #     memory: 100Mi
+    #   limits:
+    #     cpu: 100m
+    #     memory: 200Mi
+    resources:
+      {}

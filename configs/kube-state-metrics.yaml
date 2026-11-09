@@ -12,13 +12,16 @@ properties:
   replicas: 1
 
   # -- Resources to provide to the kube-state-metrics pod
-  resources: {}
-    # requests:
-    #   cpu: 50m
-    #   memory: 100Mi
-    # limits:
-    #   cpu: 100m
-    #   memory: 200Mi
+  #
+  # resources:
+  #   requests:
+  #     cpu: 50m
+  #     memory: 100Mi
+  #   limits:
+  #     cpu: 100m
+  #     memory: 200Mi
+  resources:
+    {}
 
   # -- Available collectors for kube-state-metrics. To disable a collector, remove it from the
   # list or comment it out
@@ -59,4 +62,5 @@ properties:
   # -- Extra [command line arguments](
   # https://github.com/kubernetes/kube-state-metrics/blob/main/docs/developer/cli-arguments.md
   # ) for kube-state-metrics
-  extraArgs: []
+  extraArgs:
+    []

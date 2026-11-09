@@ -9,10 +9,12 @@ metadata:
 properties:
   # -- List of repositories Atlantis is allowed to operate on.
   # Defaults to '*' (all repos). Restrict this in production to limit blast radius.
+  #
+  # repoAllowlist:
+  #   - github.com/myorg/*
+  #   - github.com/myorg/myrepo
   repoAllowlist:
-  # - github.com/myorg/*
-  # - github.com/myorg/myrepo
-  - '*'
+    - '*'
 
   # GitHub PAT authentication. Use this or githubApp, not both.
   # The PAT itself is loaded from the secret manager.
@@ -21,9 +23,9 @@ properties:
   # )
   github:
     # -- GitHub username of the bot account that owns the PAT
-    user: ''
+    user: ""
     # -- GitHub Enterprise hostname (e.g. github.your-org.com). Leave empty for github.com.
-    hostname: ''
+    hostname: ""
 
   # GitHub App authentication. Recommended over github PAT. Use this or github, not both.
   # The GitHub App private key is loaded from the secret manager.
@@ -32,25 +34,28 @@ properties:
   # )
   githubApp:
     # -- GitHub App ID
-    appID: '5331643'
+    appID: "5331643"
     # -- GitHub App Installation ID
-    installationID: '171744217'
+    installationID: "171744217"
     # -- GitHub App slug (short name of the app, e.g. my-atlantis)
-    appSlug: 'sw-atlantis'
+    appSlug: "sw-atlantis"
 
   # -- Resources to provide to the Atlantis pod
-  resources: {}
-    # requests:
-    #   cpu: 500m
-    #   memory: 1Gi
-    # limits:
-    #   memory: 2Gi
+  #
+  # resources:
+  #   requests:
+  #     cpu: 500m
+  #     memory: 1Gi
+  #   limits:
+  #     memory: 2Gi
+  resources:
+    {}
 
   # -- Storage size for the Atlantis data volume (used to check out repositories)
-  storageSize: 8Gi
+  storageSize: "8Gi"
 
   # -- Terraform distribution to use for plans and applies. Accepts 'terraform' or 'opentofu'
-  tfDistribution: terraform
+  tfDistribution: "terraform"
 
   # Terragrunt configuration.
   terragrunt:
@@ -60,9 +65,5 @@ properties:
   # AWS-specific configuration.
   aws:
     # -- List of IAM role ARNs that Atlantis can assume to run terraform.
-    assumeRoles: []
-
-  # Google-specific configuration.
-  gcp:
-    # -- List of service account emails that Atlantis can impersonate to run terraform.
-    impersonateServiceAccounts: []
+    assumeRoles:
+      []

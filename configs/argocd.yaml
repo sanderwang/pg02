@@ -12,14 +12,17 @@ properties:
     # -- The number of ApplicationSet controller pods to run
     replicas: 1
 
-    # -- Resources to provide to the ApplicationSet controller pod
-    resources: {}
-      # requests:
-      #   cpu: 50m
-      #   memory: 100Mi
-      # limits:
-      #   cpu: 100m
-      #   memory: 200Mi
+    # -- Resources to provide to the ApplicationSet controller pod.
+    #
+    # resources:
+    #   requests:
+    #     cpu: 50m
+    #     memory: 100Mi
+    #   limits:
+    #     cpu: 100m
+    #     memory: 200Mi
+    resources:
+      {}
 
   # Application controller configuration.
   controller:
@@ -28,7 +31,8 @@ properties:
 
     # -- Resources to provide to the application controller pod.
     # See applicationSet.resources for sub-fields
-    resources: {}
+    resources:
+      {}
 
   # Dex can be used to delegate authentication to external identity providers like GitHub, Google
   # and others. Reference:
@@ -47,9 +51,12 @@ properties:
       # -- Only required for GitHub Enterprise (e.g. github.your-org.com)
       hostName: ""
 
-      # -- GitHub organization whitelist (at least one required)
-      organizations: []
-        # - your-github-org
+      # -- GitHub organization whitelist (at least one required).
+      #
+      # organizations:
+      #   - your-github-org
+      organizations:
+        []
 
     # Google (G-Suite) OAuth2 configuration. Use this option if you require Google Group membership
     # in your RBAC configuration, otherwise you should use dex.oidc. A Google service account will
@@ -84,7 +91,8 @@ properties:
 
     # -- Resources to provide to the Dex server pod.
     # See applicationSet.resources for sub-fields
-    resources: {}
+    resources:
+      {}
 
   # Notification configuration.
   notifications:
@@ -110,18 +118,22 @@ properties:
       # infromation: [Subscriptions](
       # https://argo-cd.readthedocs.io/en/stable/operator-manual/notifications/subscriptions/
       # )
-      subscriptions: {}
-        # slack-channel1:
-        # - on-created
-        # - on-deleted
-        # slack-channel2:
-        # - on-sync-failed
-        # - on-sync-status-unknown
-        # - on-sync-succeeded
+      #
+      # subscriptions:
+      #   slack-channel1:
+      #     - on-created
+      #     - on-deleted
+      #   slack-channel2:
+      #     - on-sync-failed
+      #     - on-sync-status-unknown
+      #     - on-sync-succeeded
+      subscriptions:
+        {}
 
     # -- Resources to provide to the notifications controller pod.
     # See applicationSet.resources for sub-fields.
-    resources: {}
+    resources:
+      {}
 
   # Repo server configuration.
   repoServer:
@@ -133,11 +145,14 @@ properties:
 
     # -- Resources to provide to the repo server pod.
     # See applicationSet.resources for sub-fields
-    resources: {}
+    resources:
+      {}
 
-  # Redis HA configuration (used when not running locally).
+  # Redis HA configuration.
   redisHA:
     haproxy:
+      # -- Resources to provide to the HAProxy pods.
+      # See applicationSet.resources for sub-fields
       resources:
         requests:
           cpu: 50m
@@ -152,84 +167,97 @@ properties:
 
     # -- Resources to provide to the server pod.
     # See applicationSet.resources for sub-fields
-    resources: {}
+    resources:
+      {}
 
   # -- Repository credentials. Currently supported repository types: `helm`, `git`. The actual
   # credentials will be loaded from the external secret manager.
   # Reference: [Repository Credentials](
   # https://argo-cd.readthedocs.io/en/stable/operator-manual/declarative-setup/#repository-credentials
-  # )
-  repoCreds: []
-    # - name: your-org
-    #   type: git
-    #   url: https://github.com/your-org
+  # ).
+  #
+  # repoCreds:
+  #   - name: your-org
+  #     type: git
+  #     url: https://github.com/your-org
+  repoCreds:
+    []
 
-  # -- Local users. User credentials are loaded from the external secret manager
-  users: {}
-    # alice: {}
-    # john: {}
+  # -- Local users. User credentials are loaded from the external secret manager.
+  #
+  # users:
+  #   alice: {}
+  #   john: {}
+  users:
+    {}
 
-  # -- RBAC roles. Each role has a list of members. The members can be SSO groups or local users
-  roles: {}
-    # developers:
-    #   members:
-    #   - alice
-    #   - developers@your-org.com
-    #   - your-github-org:team-devs
-    # testers:
-    #   members:
-    #   - john
-    #   - testers@your-org.com
+  # -- RBAC roles. Each role has a list of members. The members can be SSO groups or local users.
+  #
+  # roles:
+  #   developers:
+  #     members:
+  #       - alice
+  #       - developers@your-org.com
+  #       - your-github-org:team-devs
+  #   testers:
+  #     members:
+  #       - john
+  #       - testers@your-org.com
+  roles:
+    {}
 
-  # -- Each application group provides a logical grouping of user applications
-  appGroups: {}
-    # development:
-    #   # Optional group description.
-    #   description: Development team managed applications
-
-    #   # Group owners. The owners must be the roles defined above. If empty, only admin users will
-    #   # have access to the grouped applications.
-    #   owners:
-    #   - developers
-
-    #   # Each source references the location of grouped application manifests.
-    #   # At least one source must be specified.
-    #   sources:
-    #   -
-    #     # The URL to the Git repository that contains the application manifests.
-    #     repoURL: https://github.com/your-org/dev-apps
-    #     # The revision of the source to sync the applications to.
-    #     targetRevision: HEAD
-    #     # A directory path within the Git repository.
-    #     path: argocd-apps/
-
-    #   # A list of repository URLs that can be used for deployment.
-    #   # Repositories referenced in `sources` are included automatically and do not need to be
-    #   # specified again here.
-    #   sourceRepos:
-    #   - https://github.com/another-org/helm-charts
-
-    #   # Namespaces in which Application resources are allowed to be created and trusted by Argo CD.
-    #   # If empty, all local cluster namespaces defined in `destinations` are used.
-    #   sourceNamespaces:
-    #   - dev1
-
-    #   # A list of destinations available for deployment.
-    #   destinations:
-    #   -
-    #     # The URL of the target cluster’s Kubernetes API server.
-    #     # If empty, defaults to the local cluster (https://kubernetes.default.svc)
-    #     server: https://kubernetes.default.svc
-    #     # The target namespace for the applications' resources.
-    #     namespace: dev1
-    #   - namespace: dev2
-
-    #   # Optional list of blacklisted cluster level resources.
-    #   clusterResourceBlacklist:
-    #   - group: rbac.authorization.k8s.io
-    #     kind: ClusterRole
-
-    #   # Optional list of whitelisted cluster level resources.
-    #   clusterResourceWhitelist:
-    #   - group: ''
-    #     kind: PersistentVolume
+  # -- Each application group provides a logical grouping of user applications.
+  #
+  # appGroups:
+  #   development:
+  #     # Optional group description.
+  #     description: Development team managed applications
+  #
+  #     # Group owners. The owners must be the roles defined above. If empty, only admin users will
+  #     # have access to the grouped applications.
+  #     owners:
+  #       - developers
+  #
+  #     # Each source references the location of grouped application manifests.
+  #     # At least one source must be specified.
+  #     sources:
+  #       -
+  #         # The URL to the Git repository that contains the application manifests.
+  #         repoURL: https://github.com/your-org/dev-apps
+  #         # The revision of the source to sync the applications to.
+  #         targetRevision: HEAD
+  #         # A directory path within the Git repository.
+  #         path: argocd-apps/
+  #
+  #     # A list of repository URLs that can be used for deployment.
+  #     # Repositories referenced in `sources` are included automatically and do not need to be
+  #     # specified again here.
+  #     sourceRepos:
+  #       - https://github.com/another-org/helm-charts
+  #
+  #     # Namespaces in which Application resources are allowed to be created and trusted by Argo
+  #     # CD. If empty, all local cluster namespaces defined in `destinations` are used.
+  #     sourceNamespaces:
+  #       - dev1
+  #
+  #     # A list of destinations available for deployment.
+  #     destinations:
+  #       -
+  #         # The URL of the target cluster's Kubernetes API server.
+  #         # If empty, defaults to the local cluster (https://kubernetes.default.svc)
+  #         server: https://kubernetes.default.svc
+  #         # The target namespace for the applications' resources.
+  #         namespace: dev1
+  #       - namespace: dev2
+  #
+  #     # Optional list of blacklisted cluster level resources.
+  #     clusterResourceBlacklist:
+  #       - group: rbac.authorization.k8s.io
+  #         kind: ClusterRole
+  #
+  #     # Optional list of whitelisted cluster level resources.
+  #     clusterResourceWhitelist:
+  #       - group: ''
+  #         kind: PersistentVolume
+  appGroups:
+    {}

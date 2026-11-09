@@ -9,17 +9,23 @@ metadata:
 # Properties that can be customized to suit your system needs.
 properties:
   # -- Resources to provide to the node exporter pod
-  resources: {}
-    # requests:
-    #   cpu: 50m
-    #   memory: 100Mi
-    # limits:
-    #   cpu: 100m
-    #   memory: 200Mi
+  #
+  # resources:
+  #   requests:
+  #     cpu: 50m
+  #     memory: 100Mi
+  #   limits:
+  #     cpu: 100m
+  #     memory: 200Mi
+  resources:
+    {}
 
   # -- Extra [Collectors](
   # https://github.com/prometheus/node_exporter?tab=readme-ov-file#collectors
   # ) for node exporter
-  extraArgs: []
-    # - --collector.processes
-    # - --collector.systemd
+  #
+  # extraArgs:
+  #   - --collector.processes
+  #   - --collector.systemd
+  extraArgs:
+    []

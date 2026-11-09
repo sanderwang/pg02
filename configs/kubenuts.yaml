@@ -1,13 +1,16 @@
-# Kubenutty core components.
+# KubeNutty core components.
 metadata:
   name: kubenuts
   version: 0.1.0
   namespace: kubenuts
   required: true
 
+# Properties that can be customized to suit your system needs.
 properties:
   # Internal gateway configuration.
   internalGateway:
+    # -- Override the GatewayClass name. Defaults to alb (EKS), gke-l7-rilb (GKE).
+    gatewayClassName: ""
     # -- Enable the HTTP redirect route on the internal gateway
     httpRedirectEnabled: true
 
@@ -21,4 +24,5 @@ properties:
     httpRedirectEnabled: true
 
   # -- Additional namespaces to create. A SecretStore will also be created for each namespace.
-  extraNamespaces: []
+  extraNamespaces:
+    []

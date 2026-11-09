@@ -24,13 +24,18 @@ properties:
   controllerReplicas: 1
 
   proxy:
-    # -- Resources to provide to each proxy container
+    # -- Resources to provide to each proxy container.
+    #
+    # resources:
+    #   requests:
+    #     cpu: 50m
+    #     memory: 100Mi
+    #   limits:
+    #     cpu: 100m
+    #     memory: 200Mi
     resources:
       requests:
         cpu: 50m
-      #   memory: 100Mi
-      # limits:
-      #   memory: 200Mi
 
   destination:
     # -- Resources to provide to each destination container.
@@ -40,7 +45,8 @@ properties:
 
   heartbeat:
     # -- Resources to provide to each heartbeat container.
-    resources: {}
+    resources:
+      {}
 
   identity:
     # -- Resources to provide to the identity controller.

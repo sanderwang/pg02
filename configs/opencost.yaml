@@ -12,13 +12,16 @@ properties:
   replicas: 1
 
   # -- Resources to provide to the cost exporter pod
-  resources: {}
-    # requests:
-    #   cpu: 50m
-    #   memory: 100Mi
-    # limits:
-    #   cpu: 100m
-    #   memory: 200Mi
+  #
+  # resources:
+  #   requests:
+  #     cpu: 50m
+  #     memory: 100Mi
+  #   limits:
+  #     cpu: 100m
+  #     memory: 200Mi
+  resources:
+    {}
 
   # -- Specify how long OpenCost keeps daily aggregated data, in days
   retention1d: 30
@@ -29,11 +32,22 @@ properties:
   # -- The amount of storage that the cost exporter container can use
   storageSize: 4Gi
 
-  # Cost reconciliation.
-  reconciledCosts:
-    # -- Enable cost reconciliation. When true, OpenCost supplements real-time estimated "list
-    # prices" with actual billing data from the cloud provider. This ensures accurate visibility
-    # into negotiated discounts, spot pricing, and credits.
+  # Cost explorer UI.
+  explorer:
+    # -- Enable the OpenCost cost explorer web UI
+    enabled: true
+
+    # -- Resources to provide to the explorer pod
+    resources:
+      limits:
+        memory: 2Gi
+      requests:
+        cpu: 100m
+        memory: 100Mi
+
+  # Cloud cost.
+  cloudCost:
+    # -- Enable cloud cost ingestion and querying
     enabled: true
 
   # Grafana configuration.
@@ -42,12 +56,19 @@ properties:
     # or comment it out. Details for each dashboard can be found at:
     # https://grafana.com/grafana/dashboards/$id
     dashboards:
-    - 22208-opencost-overview
-    - 22252-opencost-namespace
-    - 25168-opencost-workload
+      - 22208-opencost-overview
+      - 22252-opencost-namespace
+      - 25168-opencost-workload
 
   # Prometheus configuration.
   prometheus:
     # -- URL of an external Prometheus instance. If empty, the KubeNutty-managed Victoria Metrics
     # instance is used
-    externalUrl: ''
+    externalUrl: ""
+
+  # AWS-specific configuration.
+  aws:
+    # Spot Instance Data Feed.
+    spotDataFeed:
+      # -- Enable AWS Spot Instance Data Feed for accurate spot pricing
+      enabled: true
